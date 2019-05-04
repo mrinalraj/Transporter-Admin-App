@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, Dimensions } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { Actions } from 'react-native-router-flux'
 import Dimens from '../res/Dimens'
@@ -33,6 +33,7 @@ class SplashScreen extends React.Component {
                         backgroundColor: "rgba(255,255,255,0.2)",
                         borderRadius: 100
                     }} />
+                    {/* <Image source={require('../../assets/ic.png')}></Image> */}
                     <Text style={styles.bannerText}>Company Name</Text>
                     <Progress.Bar style={{ marginTop: 40 }} {...progressBar} />
                 </View>
