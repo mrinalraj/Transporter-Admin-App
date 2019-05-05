@@ -14,13 +14,20 @@ const RoundButton = ({ handleClick }) => {
 
 const Styles = StyleSheet.create({
     fabStyleBtn: {
-        height: 60,
-        width: 60,
+        height: 70,
+        width: 70,
         borderRadius: 100,
         backgroundColor: Colors.accentColor,
         justifyContent: "center",
-        alignItems: "center"
-
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3.84,
+        elevation: 5,
     }
 })
 

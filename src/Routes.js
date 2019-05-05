@@ -1,16 +1,18 @@
 import React from 'react'
 import { Router, Scene, Actions } from 'react-native-router-flux'
-import { AsyncStorage } from 'react-native'
-import SplashScreen from './scenes/SplashScreen'
-import SignUp from './scenes/SignUp'
+import { AsyncStorage, ToastAndroid } from 'react-native'
+import { SecureStore } from 'expo'
 import { LOGGED_IN_STATE } from './res/Constants'
-import OtpScreen from './scenes/OtpScreen';
+import Login from './scenes/Login'
+import SignUp from './scenes/SignUp'
+import OtpScreen from './scenes/OtpScreen'
+import ForgotPassword from './scenes/ForgotPassword'
+import ChangePassword from './scenes/ChangePassword'
 
 class Routes extends React.Component {
     state = {
-        loggedInState: false
-    }
 
+    }
 
     // onBackPress() {
     //     if (backButtonPressedOnceToExit) {
@@ -35,13 +37,13 @@ class Routes extends React.Component {
 
     loginState = async () => {
         try {
-            const loggedInState = await AsyncStorage.getItem(LOGGED_IN_STATE)
+            const loggedInState = await SecureStore.getItemAsync(LOGGED_IN_STATE)
             if (loggedInState !== null) {
                 this.setState({ loggedInState })
             }
         }
         catch (error) {
-            console.log('failed to get async storage key')
+            ToastAndroid.show(this.state.loggedInState)
         }
     }
 
@@ -50,8 +52,11 @@ class Routes extends React.Component {
         return (
             <Router>
                 <Scene key="root">
+                    <Scene key="Login" component={Login} initial={true} hideNavBar={true} />
                     <Scene key="SignUp" component={SignUp} hideNavBar={true} />
-                    <Scene key="OtpScreen" component={OtpScreen} initial={true} hideNavBar={true} />
+                    <Scene key="OtpScreen" component={OtpScreen} hideNavBar={true} />
+                    <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar={true} />
+                    <Scene key="ChangePassword" component={ChangePassword} hideNavBar={true} />
                 </Scene>
             </Router>
         );

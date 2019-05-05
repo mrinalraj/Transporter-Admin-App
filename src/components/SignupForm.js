@@ -1,12 +1,13 @@
 import React from 'react'
-import { View, Text, Picker, TextInput, StyleSheet, Alert } from 'react-native'
+import { View, Text, Picker, TextInput, StyleSheet, ToastAndroid, } from 'react-native'
 import Colors from '../res/Colors'
 import CountryCode from '../res/CountryCode'
 import RoundButton from './RoundButton'
-import { BASE_API } from '../res/Constants'
 import CustomStyles from '../res/CustomStyles'
 import axios from 'axios'
 import { Actions } from 'react-native-router-flux'
+import { ACCESS_TOKEN, PHONE_NUMBER, BASE_API, } from '../res/Constants'
+import { SecureStore } from 'expo'
 
 class SignupForm extends React.Component {
     state = {
@@ -31,43 +32,79 @@ class SignupForm extends React.Component {
     }
 
     renderList = () => {
-        return CountryCode.map(country => <Picker.Item key={country.iso2} label={`${country.name} (+${country.code})`} value={country.code
-        } />)
+        return CountryCode.map(country => <Picker.Item key={country.iso2} label={`${country.name} (+${country.code})`} value={country.code} />)
     }
 
-    afterSignup = response => {
+    otpSubmitAction = async accessToken => {
+        await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
+        Actions.replace('Login')
+    }
+
+    afterSignup = async response => {
+        this.props.setVisibility(false)
+
         if (response.error) {
             let errCode = response.error.errorCode
             let errMsg = response.error.message
         }
         else {
-            let accessToken = response.data.payload
-            Alert.alert('response', JSON.stringify(accessToken))
+            let payload = response.data.payload.result,
+                { accessToken } = payload
+            // ToastAndroid.show(accessToken, ToastAndroid.SHORT)
+            try {
+                await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
+                // await SecureStore.setItemAsync(PHONE_NUMBER, this.state.contactNo)
+                Actions.replace("OtpScreen", { submitAction: this.otpSubmitAction, otpType: 'verify', contactNo: this.setState.contactNo })
+            }
+            catch (error) {
+                ToastAndroid.show(this.state.accessToken + "Error storing token please contact admin.", ToastAndroid.SHORT)
+            }
+
         }
     }
 
-    dummyHandleSignup = () => {
-        Actions.OtpScreen({ onBack: () => null })
-    }
 
     handleSignup = () => {
         const dataClone = Object.assign({}, this.state)
         delete dataClone.passwordMatch
         delete dataClone.countryCode
-        axios.post(`${BASE_API}/transporter/signup`, dataClone)
-            .then(response => {
-                this.afterSignup(response)
+        this.props.setVisibility(true)
+        this.validate()
+            .then(() => {
+                axios.post(`${BASE_API}/signup`, dataClone)
+                    .then(response => {
+                        this.afterSignup(response)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                // this.dummyHandleSignup()
             })
             .catch(error => {
-                console.log(error)
+                ToastAndroid.show(error[Object.keys(error)[0]], ToastAndroid.SHORT)
             })
+
     }
+
+    validate = () => {
+        return new Promise((resolve, reject) => {
+            let { contactNo, email, name, password, passwordMatch } = this.state
+            let errors = {}
+            contactNo == undefined ? errors.contactNo = 'Phone Number is Required' : contactNo.trim().length < 10 ? errors.contactNo = 'Phone number should be 10 digits long' : ''
+            email == undefined || email.trim() == '' ? errors.email = 'Email is required' : /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) ? '' : errors.email = 'Invalid email format'
+            name == undefined || name.trim() == '' ? errors.name = 'Name is required' : ''
+            password == undefined || password.trim() == '' ? errors.password = 'Please set a password' : ''
+            !passwordMatch ? errors.password = 'Passwords do not match' : ''
+            Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
+        })
+    }
+
 
     render() {
         return (
+
             <View>
                 <Text style={CustomStyles.headText}>{`New here?\nlets get you onboard.`}</Text>
-
                 <Picker
                     style={Styles.picker}
                     selectedValue={this.state.countryCode}
@@ -81,9 +118,10 @@ class SignupForm extends React.Component {
                     placeholder="Phone Number"
                     keyboardType='number-pad'
                     returnKeyType="next"
+                    maxLength={10}
                     onSubmitEditing={() => { this.emailInput.focus() }}
                     blurOnSubmit={false}
-                    style={Styles.inputStyle}
+                    style={CustomStyles.inputStyle}
                 />
                 <TextInput
                     onChangeText={text => this.setState({
@@ -91,7 +129,7 @@ class SignupForm extends React.Component {
                     })}
                     placeholder="Email"
                     keyboardType="email-address"
-                    style={Styles.inputStyle}
+                    style={CustomStyles.inputStyle}
                     ref={input => this.emailInput = input}
                     returnKeyType="next"
                     onSubmitEditing={() => { this.nameInput.focus() }}
@@ -101,18 +139,19 @@ class SignupForm extends React.Component {
                         name: text
                     })}
                     placeholder="Full name"
-                    style={Styles.inputStyle}
+                    style={CustomStyles.inputStyle}
                     ref={input => this.nameInput = input}
                     returnKeyType="next"
                     onSubmitEditing={() => { this.passwordInput.focus() }}
                     blurOnSubmit={false} />
                 <TextInput
                     onChangeText={text => this.setState({
-                        password: text
+                        password: text,
+                        passwordMatch: false
                     })}
                     placeholder="Password"
                     secureTextEntry={true}
-                    style={Styles.inputStyle}
+                    style={CustomStyles.inputStyle}
                     ref={input => this.passwordInput = input}
                     returnKeyType="next"
                     onSubmitEditing={() => { this.passwordConfirmInput.focus() }}
@@ -123,16 +162,16 @@ class SignupForm extends React.Component {
                     }}
                     placeholder="Confirm password"
                     secureTextEntry={true}
-                    style={Styles.inputStyle}
+                    style={CustomStyles.inputStyle}
                     ref={input => this.passwordConfirmInput = input}
                     returnKeyType="done"
                     onSubmitEditing={() => { this.handleSignup }}
                     blurOnSubmit={false} />
                 <Text
                     style={{ color: Colors.warningRed, fontSize: 12 }}>
-                    {this.state.passwordMatch ? '' : 'Passwords do not match'}</Text>
+                    {this.state.errors != undefined ? this.state.errors[Object.keys(this.state.errors)[0]] : ''}</Text>
                 <Text style={{ marginTop: 40, textAlign: 'center', color: Colors.textColor }}>{`We will send a one time password\ncarrier rates may apply.`}</Text>
-                <RoundButton handleClick={this.dummyHandleSignup} />
+                <RoundButton handleClick={this.handleSignup} />
             </View>
         );
     }
@@ -145,14 +184,7 @@ const Styles = StyleSheet.create({
         margin: -8,
         marginTop: 40,
     },
-    inputStyle: {
-        marginTop: 35,
-        paddingBottom: 3,
-        fontSize: 15,
-        borderBottomColor: Colors.blackColor,
-        borderBottomWidth: 1.5,
-        letterSpacing: 0.5,
-    },
+
 })
 
 export default SignupForm
