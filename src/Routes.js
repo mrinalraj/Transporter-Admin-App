@@ -1,17 +1,24 @@
 import React from 'react'
-import { Router, Scene, Actions } from 'react-native-router-flux'
-import { AsyncStorage, ToastAndroid } from 'react-native'
-import { SecureStore } from 'expo'
-import { LOGGED_IN_STATE } from './res/Constants'
+import { Router, Scene, Drawer, } from 'react-native-router-flux'
+import { ToastAndroid, } from 'react-native'
+import { SecureStore, } from 'expo'
+import { ACCESS_TOKEN, } from './res/Constants'
+
+
 import Login from './scenes/Login'
 import SignUp from './scenes/SignUp'
 import OtpScreen from './scenes/OtpScreen'
 import ForgotPassword from './scenes/ForgotPassword'
 import ChangePassword from './scenes/ChangePassword'
+import Profile from './scenes/Profile'
+import Vehicals from './scenes/Vehicals'
+import DrawerMenu from './components/DrawerMenu'
+import Dimens from './res/Dimens'
+import Home from './scenes/Home'
+
 
 class Routes extends React.Component {
     state = {
-
     }
 
     // onBackPress() {
@@ -37,10 +44,10 @@ class Routes extends React.Component {
 
     loginState = async () => {
         try {
-            const loggedInState = await SecureStore.getItemAsync(LOGGED_IN_STATE)
-            if (loggedInState !== null) {
-                this.setState({ loggedInState })
-            }
+            const loggedInState = await SecureStore.getItemAsync(ACCESS_TOKEN)
+            this.setState({
+                loggedInState: loggedInState !== null
+            })
         }
         catch (error) {
             ToastAndroid.show(this.state.loggedInState)
@@ -52,11 +59,35 @@ class Routes extends React.Component {
         return (
             <Router>
                 <Scene key="root">
-                    <Scene key="Login" component={Login} initial={true} hideNavBar={true} />
-                    <Scene key="SignUp" component={SignUp} hideNavBar={true} />
-                    <Scene key="OtpScreen" component={OtpScreen} hideNavBar={true} />
-                    <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar={true} />
-                    <Scene key="ChangePassword" component={ChangePassword} hideNavBar={true} />
+                    {/* <Scene key="InitRouter" initial component={InitRouter} hideNavBar isLogged={this.props.isLogged} /> */}
+                    <Drawer
+                        key="HomeDrawer"
+                        hideNavBar
+                        initial={this.props.isLogged}
+                        contentComponent={DrawerMenu}
+                        drawerWidth={Dimens.windowWidth * 0.6}
+                        hideDrawerButton={true}
+                        drawerPosition="left">
+
+                        <Scene key="Home"
+                            hideNavBar
+                            component={Home} />
+                        <Scene key="Profile"
+                            hideNavBar
+                            component={Profile} />
+                        <Scene key="Vehicals"
+                            hideNavBar
+                            component={Vehicals} />
+
+                    </Drawer>
+                    <Scene key="Login"
+                        component={Login}
+                        initial={!this.props.isLogged}
+                        hideNavBar />
+                    <Scene key="SignUp" component={SignUp} hideNavBar />
+                    <Scene key="OtpScreen" component={OtpScreen} hideNavBar />
+                    <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar />
+                    <Scene key="ChangePassword" component={ChangePassword} hideNavBar />
                 </Scene>
             </Router>
         );

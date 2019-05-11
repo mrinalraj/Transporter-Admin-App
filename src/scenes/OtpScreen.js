@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TextInput, ToastAndroid, Alert, } from 'react-native'
+import { View, StyleSheet, Text, TextInput, ToastAndroid, Alert, Actions } from 'react-native'
 import TopBanner from '../components/TopBanner'
 import Colors from '../res/Colors'
 import Dimens from '../res/Dimens'
 import axios from 'axios'
-import { BASE_API, ACCESS_TOKEN, PHONE_NUMBER } from '../res/Constants';
+import { BASE_API, ACCESS_TOKEN, } from '../res/Constants';
 import { SecureStore } from 'expo'
 import LoadingDialog from '../components/LoadingDialog';
 
@@ -13,7 +13,6 @@ class OtpScreen extends Component {
     state = {
         otp: [],
         visible: false,
-        submitAction: this.props.submitAction,
         contactNo: this.props.contactNo
     }
 
@@ -22,23 +21,23 @@ class OtpScreen extends Component {
     }
 
     shiftFocus = (val, name) => {
-        if (val.length < 1) {
-            this.setState(prevState => ({
-                otp: [...prevState.otp.pop()]
-            }), () => {
+        // if (val.length < 1) {
+        //     this.setState(prevState => ({
+        //         otp: [...prevState.otp.pop()]
+        //     }), () => {
 
-                switch (name) {
-                    case 'in1':
-                        break;
-                    case 'in2': this.input1.focus()
-                        break;
-                    case 'in3': this.input2.focus()
-                        break;
-                    case 'in4': this.input3.focus()
-                        break;
-                }
-            })
-        }
+        //         switch (name) {
+        //             case 'in1':
+        //                 break;
+        //             case 'in2': this.input1.focus()
+        //                 break;
+        //             case 'in3': this.input2.focus()
+        //                 break;
+        //             case 'in4': this.input3.focus()
+        //                 break;
+        //         }
+        //     })
+        // }
 
         this.setState(prevState => ({
             otp: [...prevState.otp, val]
@@ -55,16 +54,18 @@ class OtpScreen extends Component {
                     break;
             }
         })
+
+
     }
 
     finishOtp = async () => {
         this.setState({ visible: true })
         this.input4.blur()
-        let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
-        // ToastAndroid.show(JSON.stringify(accessToken), ToastAndroid.SHORT)
 
         let endpoint = '', data = {}, headers = {}
+
         if (this.props.otpType === 'verify') {
+            let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
             endpoint = '/verifyotp'
             data = {
                 otp: this.state.otp.join('')
@@ -80,37 +81,48 @@ class OtpScreen extends Component {
             }
         }
 
+        ToastAndroid.show(JSON.stringify(data), ToastAndroid.SHORT)
+
         axios.post(`${BASE_API}${endpoint}`, data, {
             headers
-        }).then(response => {
-            let success = response.data.success
+        }).then(async ({ data }) => {
+            let { success, payload } = data
             if (success) {
-                let result = response.data.payload.result
-                // ToastAndroid.show(JSON.stringify(result.message), ToastAndroid.SHORT)
-                Alert.alert(JSON.stringify(response.data))
+                let { result } = payload
+
+                if (this.props.otpType === 'verify') {
+                    // Alert.alert(result.message)
+                    Actions.Home()
+                }
+                else {
+                    try {
+                        await SecureStore.setItemAsync(ACCESS_TOKEN, result.accessToken)
+                        Actions.replace('Home')
+                    }
+                    catch (e) {
+                        ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
+                    }
+                    Alert.alert('haha')
+                }
                 this.setState({ visible: false })
-                this.state.submitAction(this.props.otpType === 'verify' ? result.accessToken : accessToken)
+                // ToastAndroid.show(result.accessToken, ToastAndroid.SHORT)
             }
             else {
-                let error = response.data.payload.error,
+                let { error } = payload,
                     { errorCode, message } = error
-
-                // ToastAndroid.show(JSON.stringify(message), ToastAndroid.SHORT)
-                Alert.alert(JSON.stringify(response.data))
+                this.setState({ visible: false })
+                Alert.alert('Error Occured', message)
             }
         })
             .catch(err => console.log(err))
     }
 
-    finishOtpOld = async () => {
-
-    }
 
     resendOtp = () => {
         this.setState({ visible: true })
         axios.post(`${BASE_API}/sendOtp`, { contactNo: this.state.contactNo })
-            .then(response => {
-                if (response.data.success) {
+            .then(({ data }) => {
+                if (data.success) {
                     this.setState({ visible: false })
                     ToastAndroid.show(`OTP sent to ${this.state.contactNo}`, ToastAndroid.LONG)
                 }
@@ -122,14 +134,12 @@ class OtpScreen extends Component {
     }
 
 
-
-
     render() {
         return (
             <View style={{ backgroundColor: Colors.primaryColor, flex: 1 }}>
                 <TopBanner />
                 <Text style={{ textAlign: "center", color: Colors.White, fontSize: 20, letterSpacing: 0.5, }}>Verification Code</Text>
-                <Text style={{ textAlign: "center", fontSize: 15, letterSpacing: 0.2, color: Colors.muteTextColor }}>{`Please type the verification code sent to ${this.state.contactNo}`}</Text>
+                <Text style={{ textAlign: "center", fontSize: 15, letterSpacing: 0.2, color: Colors.muteTextColor }}>{`Please type the verification code sent to ${this.props.contactNo}`}</Text>
                 <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 20 }}>
                     <TextInput ref={input => this.input1 = input} keyboardType='number-pad' maxLength={1} onChangeText={val => this.shiftFocus(val, 'in1')} style={Styles.otpInput}></TextInput>
                     <TextInput ref={input => this.input2 = input} keyboardType='number-pad' maxLength={1} onChangeText={val => this.shiftFocus(val, 'in2')} style={Styles.otpInput}></TextInput>

@@ -1,12 +1,12 @@
 import React from 'react'
-import { View, Text, Picker, TextInput, StyleSheet, ToastAndroid, } from 'react-native'
+import { View, Text, Picker, TextInput, StyleSheet, ToastAndroid, Alert, } from 'react-native'
 import Colors from '../res/Colors'
 import CountryCode from '../res/CountryCode'
 import RoundButton from './RoundButton'
 import CustomStyles from '../res/CustomStyles'
 import axios from 'axios'
 import { Actions } from 'react-native-router-flux'
-import { ACCESS_TOKEN, PHONE_NUMBER, BASE_API, } from '../res/Constants'
+import { ACCESS_TOKEN, BASE_API, } from '../res/Constants'
 import { SecureStore } from 'expo'
 
 class SignupForm extends React.Component {
@@ -35,29 +35,30 @@ class SignupForm extends React.Component {
         return CountryCode.map(country => <Picker.Item key={country.iso2} label={`${country.name} (+${country.code})`} value={country.code} />)
     }
 
-    otpSubmitAction = async accessToken => {
-        await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
-        Actions.replace('Login')
+    otpSubmitAction = () => {
+
     }
 
-    afterSignup = async response => {
+    afterSignup = async data => {
         this.props.setVisibility(false)
 
-        if (response.error) {
-            let errCode = response.error.errorCode
-            let errMsg = response.error.message
+        let { success, payload } = data
+
+        if (!success) {
+
+            let { errorCode, message } = payload.error
+
+            Alert.alert('Error Occured', message)
         }
         else {
-            let payload = response.data.payload.result,
-                { accessToken } = payload
-            // ToastAndroid.show(accessToken, ToastAndroid.SHORT)
+            let { accessToken } = payload.result
+
             try {
                 await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
-                // await SecureStore.setItemAsync(PHONE_NUMBER, this.state.contactNo)
-                Actions.replace("OtpScreen", { submitAction: this.otpSubmitAction, otpType: 'verify', contactNo: this.setState.contactNo })
+                Actions.replace("OtpScreen", { otpType: 'verify', accessToken: accessToken })
             }
             catch (error) {
-                ToastAndroid.show(this.state.accessToken + "Error storing token please contact admin.", ToastAndroid.SHORT)
+                Alert.alert("Error Occured", "Error storing token please contact admin.")
             }
 
         }
@@ -68,17 +69,16 @@ class SignupForm extends React.Component {
         const dataClone = Object.assign({}, this.state)
         delete dataClone.passwordMatch
         delete dataClone.countryCode
-        this.props.setVisibility(true)
         this.validate()
             .then(() => {
+                this.props.setVisibility(true)
                 axios.post(`${BASE_API}/signup`, dataClone)
                     .then(response => {
-                        this.afterSignup(response)
+                        this.afterSignup(response.data)
                     })
                     .catch(error => {
                         console.log(error)
                     })
-                // this.dummyHandleSignup()
             })
             .catch(error => {
                 ToastAndroid.show(error[Object.keys(error)[0]], ToastAndroid.SHORT)
