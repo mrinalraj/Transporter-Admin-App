@@ -125,9 +125,9 @@ class Login extends Component {
                     }</Text>
                     <Text style={{ ...Styles.forgotPassword }} onPress={() => Actions.push('ForgotPassword')}>Forgot Password ?</Text>
                     <Text style={{ padding: 10, textAlign: "center" }} onPress={() => Actions.SignUp()}>New here, Sign up?</Text>
-                    <RoundButton handleClick={this.handleClick} />
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
+                <RoundButton handleClick={this.handleClick} />
             </View >
         );
     }

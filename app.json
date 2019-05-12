@@ -21,7 +21,12 @@
 			"supportsTablet": true
 		},
 		"android": {
-			"package": "com.transporter.app"
+			"package": "com.transporter.app",
+			"config": {
+				"googleMaps": {
+					"apiKey": "AIzaSyDu9JLR_CCvfdyuaYnkkkfFqJD8e1_Ro28"
+				}
+			}
 		},
 		"description": ""
 	}

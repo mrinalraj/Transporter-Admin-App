@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
-import { Card, Avatar, Title, Subheading } from 'react-native-paper'
-import Dimens from '../res/Dimens';
-import Colors from '../res/Colors';
+import { View, Text } from 'react-native'
+import Colors from '../res/Colors'
+import Dimens from '../res/Dimens'
+import { Card, Button, Title, Subheading } from 'react-native-paper';
 
-class TruckListing extends Component {
+class RidesListing extends Component {
     state = {
         ...this.props,
     }
 
     render() {
         return (
-            <Card style={{ marginBottom: Dimens.padding / 2 }} onPress={this.props.onPress}>
+            <Card style={{ marginBottom: Dimens.padding / 2 }} onPress={this.props.viewDetails}>
 
                 <Card.Content>
                     <View style={{ flexDirection: "row" }}>
@@ -25,36 +25,36 @@ class TruckListing extends Component {
                                 <Subheading>{this.state.to.subplace}</Subheading>
                             </View>
                         </View>
-
+                        {/* start editing */}
                         <View style={{ flexDirection: 'column', borderLeftColor: Colors.muteTextColor, borderLeftWidth: 1, flex: 0.6 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, }}>
-                                <Image style={{ height: 21.4, width: 30, marginEnd: 15 }} source={require('../../assets/truck.png')} />
-                                <Text>{this.state.truckType}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingBottom: 10 }}>
+                                {/* <Image style={{ height: 21.4, width: 30, marginEnd: 15 }} source={require('../../assets/truck.png')} /> */}
+                                <Text>{this.state.loadType}</Text>
                             </View>
-
-                            <View style={{ borderBottomColor: Colors.muteTextColor, borderBottomWidth: 1, flex: 1 }} />
 
                             <View style={{ padding: 20 }}>
-                                <Text>{this.state.size}</Text>
-                                <Text>{this.state.time}</Text>
+                                <Text>{`Start Date`}</Text>
+                                <Text>{`End Date`}</Text>
                             </View>
 
                             <View style={{ borderBottomColor: Colors.muteTextColor, borderBottomWidth: 1, flex: 1 }} />
 
                             <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, }}>
-                                <Image style={{ height: 21.4, width: 30, marginEnd: 15 }} source={require('../../assets/truck.png')} />
-                                <Text>{this.state.itemType}</Text>
+                                {/* <Image style={{ height: 21.4, width: 30, marginEnd: 15 }} source={require('../../assets/truck.png')} /> */}
+                                <Text>{`Users : ${this.state.usersCount}`}</Text>
                             </View>
                         </View>
                     </View>
+                    {/* end editing */}
                 </Card.Content>
 
                 <View style={{ borderBottomColor: Colors.muteTextColor, borderBottomWidth: 1, flex: 1 }} />
 
                 <Card.Content>
-                    <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10 }}>
-                        <Text style={{ flex: 0.5 }}>Trip Rate</Text>
-                        <Text style={{ flex: 0.5, textAlign: 'right' }}> Rs. {this.state.rate} </Text>
+                    <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10, alignItems: 'center', justifyContent: 'space-around' }}>
+                        <Text style={{ flex: 0.6 }}>{this.state.status}</Text>
+                        {/* <Button style={{ flex: 0.4, justifyContent: 'flex-end' }}> View Details </Button> */}
+                        <Text style={{ flex: 0.4, textAlign: "right", padding: 10, paddingRight: 0, color: Colors.primaryColor }} onPress={this.props.viewDetails}>{`View Details`.toUpperCase()}</Text>
                     </View>
                 </Card.Content>
             </Card>
@@ -62,4 +62,4 @@ class TruckListing extends Component {
     }
 }
 
-export default TruckListing;
+export default RidesListing;

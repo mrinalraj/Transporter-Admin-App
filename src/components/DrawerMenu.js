@@ -1,10 +1,10 @@
 import { List, Menu } from 'react-native-paper'
-import { View, Text, ToastAndroid } from 'react-native'
+import { View, Text, ToastAndroid, Alert } from 'react-native'
 import React, { Component } from 'react'
-import { Actions } from 'react-native-router-flux';
-import Dimens from '../res/Dimens';
+import { Actions } from 'react-native-router-flux'
+import Dimens from '../res/Dimens'
 import { SecureStore } from 'expo'
-import { ACCESS_TOKEN } from '../res/Constants';
+import { ACCESS_TOKEN } from '../res/Constants'
 
 class DrawerMenu extends Component {
     state = {
@@ -19,11 +19,11 @@ class DrawerMenu extends Component {
         }
 
         if (currentScene == sceneKey) {
-            ToastAndroid.show('same key, closing drawer : ' + currentScene, ToastAndroid.SHORT)
-            Actions.drawerClose
+            // ToastAndroid.show('same key, closing drawer : ' + currentScene, ToastAndroid.SHORT)
+            Actions.drawerClose()
         }
         else {
-            ToastAndroid.show('different key, change screen', ToastAndroid.SHORT)
+            // ToastAndroid.show('different key, change screen', ToastAndroid.SHORT)
             Actions.pop()
             Actions[sceneKey].call()
         }
@@ -46,20 +46,32 @@ class DrawerMenu extends Component {
                 <List.Section>
                     <List.Item title="My Profile" onPress={() => this.navigate('Profile')} />
                     <List.Item title="Vehicals" onPress={() => this.navigate('Vehicals')} />
-                    <List.Item title="My Rides" onPress={() => this.navigate('Vehicals')} />
+                    <List.Item title="My Rides" onPress={() => this.navigate('MyRides')} />
                     <List.Item title="My Subscription" onPress={() => this.navigate('Vehicals')} />
                     <List.Item title="My Requests" onPress={() => this.navigate('Vehicals')} />
                     <List.Item title="Market Rate" onPress={() => this.navigate('Vehicals')} />
                 </List.Section>
                 <List.Section>
                     <List.Item title="Logout" onPress={async () => {
-                        try {
-                            await SecureStore.deleteItemAsync(ACCESS_TOKEN)
-                            Actions.reset('Login')
-                        }
-                        catch{
-                            console.log('error')
-                        }
+                        Alert.alert('Are you sure?', 'Are you sure you want to logout?', [
+                            {
+                                text: 'Yes',
+                                onPress: async () => {
+                                    try {
+                                        await SecureStore.deleteItemAsync(ACCESS_TOKEN)
+                                        Actions.reset('Login')
+                                    }
+                                    catch{
+                                        console.log('error')
+                                    }
+                                }
+                            },
+                            {
+                                text: 'No',
+                                onPress: () => { Actions.drawerClose() }
+                            },
+                        ],
+                            { cancelable: false })
                     }} />
                 </List.Section>
             </View>

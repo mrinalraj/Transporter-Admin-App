@@ -102,7 +102,6 @@ class OtpScreen extends Component {
                     catch (e) {
                         ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
                     }
-                    Alert.alert('haha')
                 }
                 this.setState({ visible: false })
                 // ToastAndroid.show(result.accessToken, ToastAndroid.SHORT)

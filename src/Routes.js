@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Scene, Drawer, } from 'react-native-router-flux'
+import { Router, Scene, Drawer, Modal, } from 'react-native-router-flux'
 import { ToastAndroid, } from 'react-native'
 import { SecureStore, } from 'expo'
 import { ACCESS_TOKEN, } from './res/Constants'
@@ -10,11 +10,15 @@ import SignUp from './scenes/SignUp'
 import OtpScreen from './scenes/OtpScreen'
 import ForgotPassword from './scenes/ForgotPassword'
 import ChangePassword from './scenes/ChangePassword'
-import Profile from './scenes/Profile'
-import Vehicals from './scenes/Vehicals'
+import Profile from './scenes/sidebar/Profile'
+import Vehicals from './scenes/sidebar/Vehicals'
 import DrawerMenu from './components/DrawerMenu'
 import Dimens from './res/Dimens'
 import Home from './scenes/Home'
+import CreateRideUserRequest from './scenes/CreateRideUserRequest'
+import MyRides from './scenes/sidebar/MyRides'
+import FullDetail from './scenes/intermidiates/FullDetail'
+import TruckLocationOnMap from './scenes/intermidiates/TruckLocationOnMap'
 
 
 class Routes extends React.Component {
@@ -58,8 +62,7 @@ class Routes extends React.Component {
 
         return (
             <Router>
-                <Scene key="root">
-                    {/* <Scene key="InitRouter" initial component={InitRouter} hideNavBar isLogged={this.props.isLogged} /> */}
+                <Scene key="root" hideNavBar>
                     <Drawer
                         key="HomeDrawer"
                         hideNavBar
@@ -69,25 +72,25 @@ class Routes extends React.Component {
                         hideDrawerButton={true}
                         drawerPosition="left">
 
-                        <Scene key="Home"
-                            hideNavBar
-                            component={Home} />
-                        <Scene key="Profile"
-                            hideNavBar
-                            component={Profile} />
-                        <Scene key="Vehicals"
-                            hideNavBar
-                            component={Vehicals} />
+                        <Scene key="Home" component={Home} hideNavBar />
+                        <Scene key="Profile" component={Profile} hideNavBar />
+                        <Scene key="Vehicals" component={Vehicals} hideNavBar />
+                        <Scene key="MyRides" component={MyRides} hideNavBar />
 
                     </Drawer>
+
                     <Scene key="Login"
                         component={Login}
                         initial={!this.props.isLogged}
                         hideNavBar />
+
                     <Scene key="SignUp" component={SignUp} hideNavBar />
                     <Scene key="OtpScreen" component={OtpScreen} hideNavBar />
                     <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar />
                     <Scene key="ChangePassword" component={ChangePassword} hideNavBar />
+                    <Scene key="CreateRideUserRequest" component={CreateRideUserRequest} hideNavBar />
+                    <Scene key="FullDetail" component={FullDetail} hideNavBar></Scene>
+                    <Scene key="TruckLocationOnMap" component={TruckLocationOnMap} hideNavBar></Scene>
                 </Scene>
             </Router>
         );

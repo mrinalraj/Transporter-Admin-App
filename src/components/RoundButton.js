@@ -1,14 +1,20 @@
 import React from 'react'
 import { View, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native'
 import Colors from '../res/Colors'
+import { FAB } from 'react-native-paper';
+import Dimens from '../res/Dimens';
 
 const RoundButton = ({ handleClick }) => {
     return (
-        <View style={{ justifyContent: "center", alignItems: "center", margin: 40 }}>
-            <TouchableOpacity style={Styles.fabStyleBtn} onPress={handleClick}>
-                <Image height={25} source={require('../../assets/r-arrow.png')}></Image>
-            </TouchableOpacity>
+        <View style={{ position: 'absolute', bottom: 20, left: 0, width: Dimens.windowWidth - 80, justifyContent: 'center', alignItems: 'center', margin: 40, }}>
+            <FAB icon="arrow-forward" onPress={handleClick} />
         </View>
+
+        // <View style={{ justifyContent: "center", alignItems: "center", margin: 40 }}>
+        //     <TouchableOpacity style={Styles.fabStyleBtn} onPress={handleClick}>
+        //         <Image height={25} source={require('../../assets/r-arrow.png')}></Image>
+        //     </TouchableOpacity>
+        // </View>
     )
 }
 

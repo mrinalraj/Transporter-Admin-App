@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, ToastAndroid } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, ToastAndroid, Alert } from 'react-native'
 import Dimens from '../res/Dimens'
 import TruckListing from '../components/TruckListing'
 import { SecureStore } from 'expo'
 import { ACCESS_TOKEN } from '../res/Constants'
-import { Actions, Drawer } from 'react-native-router-flux';
+import { Actions, } from 'react-native-router-flux';
 import Colors from '../res/Colors';
-import { Title, Button, IconButton } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 
 
 class Home extends Component {
     state = {
 
     }
-
 
     list = [
         {
@@ -114,7 +113,23 @@ class Home extends Component {
             Actions.replace('Login')
         }
     }
-
+    cardPressed = e => {
+        this.setState({
+            currentCard: e
+        }, Alert.alert('', 'Are you sure you want to accept the request', [
+            {
+                text: 'Yes',
+                onPress: () => Actions.CreateRideUserRequest({ data: e })
+                // ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
+            },
+            {
+                text: "No",
+                onPress: () => ToastAndroid.show('no pressed', ToastAndroid.SHORT)
+            }
+        ],
+            { cancelable: false }
+        ))
+    }
 
     render() {
         return (
@@ -128,18 +143,18 @@ class Home extends Component {
                         onPress={() => Actions.drawerOpen()}
                     />
 
-                    <View style={{ backgroundColor: Colors.primaryColor, alignItems: 'center', flex: 0.6 }}>
+                    <View style={{ backgroundColor: Colors.primaryColor, alignItems: 'center', flex: 0.8 }}>
                         <Image source={require('../../assets/ic.png')} style={{ height: 40, width: 60 }} />
                         <Text style={{ color: Colors.White, letterSpacing: 1, }}>{'Transporter'.toUpperCase()}</Text>
                     </View>
 
-                    <View style={{ flex: 0.2, justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <View style={{ flex: 0.1, justifyContent: 'flex-end', alignItems: 'center' }}>
                         {/* <Image source={require('../../assets/ham.png')} style={{ height: 20, width: 20 }} /> */}
                     </View>
                 </View>
 
                 <ScrollView style={Styles.rootView}>
-                    {this.list.map((e, i) => <TruckListing key={i} {...e} onPress={() => ToastAndroid.show('pressed', ToastAndroid.SHORT)} />)}
+                    {this.list.map((e, i) => <TruckListing key={i} {...e} onPress={() => this.cardPressed(e)} />)}
                 </ScrollView>
             </View>
         );
