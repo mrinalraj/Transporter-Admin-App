@@ -11,26 +11,20 @@ class DrawerMenu extends Component {
         active: 'first'
     }
 
-    navigate = sceneKey => {
+    navigate = (sceneKey, props) => {
         const currentScene = Actions.currentScene.substr(1)
 
-        if (currentScene == 'Home') {
-            Actions[sceneKey].call()
-        }
+        if (currentScene == 'Home')
+            Actions.jump(sceneKey, props)
 
-        if (currentScene == sceneKey) {
-            // ToastAndroid.show('same key, closing drawer : ' + currentScene, ToastAndroid.SHORT)
+        else if (currentScene == sceneKey)
             Actions.drawerClose()
-        }
+
         else {
-            // ToastAndroid.show('different key, change screen', ToastAndroid.SHORT)
             Actions.pop()
             Actions[sceneKey].call()
         }
 
-        // ToastAndroid.show(
-        //     `Current Scene is ${Actions.currentScene.substr(1)} and we are jumping to ${sceneKey} , and they are ${Actions.currentScene == '_' + sceneKey ? 'similar' : 'different'}`
-        //     , ToastAndroid.SHORT)
     }
 
     render() {
@@ -44,14 +38,15 @@ class DrawerMenu extends Component {
                 }}>Transporter</Text>
 
                 <List.Section>
-                    <List.Item title="My Profile" onPress={() => this.navigate('Profile')} />
-                    <List.Item title="Vehicals" onPress={() => this.navigate('Vehicals')} />
                     <List.Item title="My Rides" onPress={() => this.navigate('MyRides')} />
-                    <List.Item title="My Subscription" onPress={() => this.navigate('Vehicals')} />
-                    <List.Item title="My Requests" onPress={() => this.navigate('Vehicals')} />
-                    <List.Item title="Market Rate" onPress={() => this.navigate('Vehicals')} />
+                    {/* <List.Item title="My Subscription" onPress={() => this.navigate('Vehicles')} /> */}
+                    <List.Item title="My Requests" onPress={() => this.navigate('MyRequests')} />
+                    <List.Item title="Market Rate" onPress={() => this.navigate('MarketRate')} />
+                    <List.Item title="Vehicles" onPress={() => this.navigate('Vehicles')} />
                 </List.Section>
                 <List.Section>
+                    <List.Item title="My Profile" onPress={() => this.navigate('Profile')} />
+                    <List.Item title="Change Password" onPress={() => this.navigate('ChangePassword', { changeType: 'current' })} />
                     <List.Item title="Logout" onPress={async () => {
                         Alert.alert('Are you sure?', 'Are you sure you want to logout?', [
                             {

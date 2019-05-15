@@ -1,14 +1,31 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, Text, TextInput, KeyboardAvoidingView } from 'react-native'
+import { View, StyleSheet, ScrollView, Text, TextInput, KeyboardAvoidingView, ToastAndroid } from 'react-native'
 import RoundButton from '../components/RoundButton'
-import LoadingDialog from '../components/LoadingDialog'
 import TopBanner from '../components/TopBanner'
 import CustomStyle from '../res/CustomStyles'
 import Dimens from '../res/Dimens'
 
 class ChangePassword extends Component {
 
+    state = {
+        type: this.props.changeType
+    }
+
+
+    renderCurrent = () => {
+        if (this.state.type == 'current')
+            return (<TextInput
+                style={CustomStyle.inputStyle}
+                placeholder="Current Password"
+                returnKeyType="next"
+                secureTextEntry={true}
+            />)
+    }
+
     render() {
+
+        // TODO
+
         return (
             <View style={{ flex: 1 }}>
                 <TopBanner />
@@ -20,6 +37,9 @@ class ChangePassword extends Component {
                 }} showsVerticalScrollIndicator={false}>
                     <KeyboardAvoidingView behavior="position">
                         <Text style={CustomStyle.headText}>{`Enter the new password`}</Text>
+                        {
+                            this.renderCurrent()
+                        }
                         <TextInput
                             style={CustomStyle.inputStyle}
                             placeholder="New Password"
@@ -32,9 +52,9 @@ class ChangePassword extends Component {
                             returnKeyType="done"
                             secureTextEntry={true}
                         />
-                        <RoundButton handleClick={this.handleClick} />
                     </KeyboardAvoidingView>
                 </ScrollView>
+                <RoundButton handleClick={this.handleClick} />
             </View >
         );
     }

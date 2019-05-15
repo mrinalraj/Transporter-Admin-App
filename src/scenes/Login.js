@@ -19,7 +19,7 @@ class Login extends Component {
     otpSubmitAction = async accessToken => {
         try {
             await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
-            Actions.replace('Home')
+            Actions.replace('HomeDrawer')
         }
         catch (e) {
             ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
@@ -29,7 +29,7 @@ class Login extends Component {
     async componentDidMount() {
         let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
         if (accessToken != null) {
-            Actions.replace('Home')
+            Actions.replace('HomeDrawer')
         }
     }
 
@@ -74,7 +74,7 @@ class Login extends Component {
             try {
                 await SecureStore.deleteItemAsync(ACCESS_TOKEN)
                 await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
-                Actions.replace('Home')
+                Actions.replace('HomeDrawer')
             }
             catch (error) {
                 Alert.alert("Error Occured", JSON.stringify(error))

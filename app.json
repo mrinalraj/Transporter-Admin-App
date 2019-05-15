@@ -22,6 +22,7 @@
 		},
 		"android": {
 			"package": "com.transporter.app",
+			"permissions": [],
 			"config": {
 				"googleMaps": {
 					"apiKey": "AIzaSyDu9JLR_CCvfdyuaYnkkkfFqJD8e1_Ro28"

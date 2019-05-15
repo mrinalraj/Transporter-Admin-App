@@ -11,7 +11,7 @@ import OtpScreen from './scenes/OtpScreen'
 import ForgotPassword from './scenes/ForgotPassword'
 import ChangePassword from './scenes/ChangePassword'
 import Profile from './scenes/sidebar/Profile'
-import Vehicals from './scenes/sidebar/Vehicals'
+import Vehicles from './scenes/Vehicles'
 import DrawerMenu from './components/DrawerMenu'
 import Dimens from './res/Dimens'
 import Home from './scenes/Home'
@@ -19,6 +19,9 @@ import CreateRideUserRequest from './scenes/CreateRideUserRequest'
 import MyRides from './scenes/sidebar/MyRides'
 import FullDetail from './scenes/intermidiates/FullDetail'
 import TruckLocationOnMap from './scenes/intermidiates/TruckLocationOnMap'
+import CreateRide from './scenes/CreateRide'
+import MyRequests from './scenes/MyRequests'
+import MarketRate from './scenes/MarketRate'
 
 
 class Routes extends React.Component {
@@ -74,8 +77,10 @@ class Routes extends React.Component {
 
                         <Scene key="Home" component={Home} hideNavBar />
                         <Scene key="Profile" component={Profile} hideNavBar />
-                        <Scene key="Vehicals" component={Vehicals} hideNavBar />
+                        <Scene key="Vehicles" component={Vehicles} hideNavBar />
                         <Scene key="MyRides" component={MyRides} hideNavBar />
+                        <Scene key="MyRequests" component={MyRequests} hideNavBar />
+                        <Scene key="MarketRate" component={MarketRate} hideNavBar />
 
                     </Drawer>
 
@@ -91,6 +96,7 @@ class Routes extends React.Component {
                     <Scene key="CreateRideUserRequest" component={CreateRideUserRequest} hideNavBar />
                     <Scene key="FullDetail" component={FullDetail} hideNavBar></Scene>
                     <Scene key="TruckLocationOnMap" component={TruckLocationOnMap} hideNavBar></Scene>
+                    <Scene key="CreateRide" component={CreateRide} hideNavBar></Scene>
                 </Scene>
             </Router>
         );
