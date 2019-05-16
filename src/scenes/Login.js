@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TextInput, ScrollView, Alert, ToastAndroid, } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ScrollView, Alert, ToastAndroid, KeyboardAvoidingView } from 'react-native'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
 import CustomStyle from '../res/CustomStyles'
@@ -10,6 +10,7 @@ import { SecureStore } from 'expo'
 import { ACCESS_TOKEN, BASE_API } from '../res/Constants';
 import LoadingDialog from '../components/LoadingDialog'
 import axios from 'axios'
+import FooterButton from '../components/FooterButton'
 
 class Login extends Component {
     state = {
@@ -99,35 +100,37 @@ class Login extends Component {
             <View style={{ flex: 1 }}>
                 <TopBanner />
                 <ScrollView scrollEnabled={true} contentContainerStyle={{
-                    paddingRight: Dimens.padding,
-                    paddingTop: Dimens.padding,
-                    paddingLeft: Dimens.padding,
+                    padding: Dimens.padding / 2,
+                    paddingBottom: Dimens.footerButtonHeight,
                     flexGrow: 2,
                 }} showsVerticalScrollIndicator={false}>
-                    <Text style={CustomStyle.headText}>{`Welcome back,\nlets get you signed in`}</Text>
-                    <TextInput
-                        style={CustomStyle.inputStyle}
-                        placeholder="Phone Number"
-                        returnKeyType="next"
-                        onChangeText={val => this.setState({ contactNo: val.trim() })}
-                        keyboardType='number-pad'
-                        maxLength={10}
-                    />
-                    <TextInput
-                        style={CustomStyle.inputStyle}
-                        placeholder="Password"
-                        returnKeyType="done"
-                        onChangeText={val => this.setState({ password: val.trim() })}
-                        secureTextEntry={true}
-                    />
-                    <Text style={{ color: Colors.warningRed, fontSize: 12 }}>{
-                        this.state.errors != undefined ? this.state.errors[Object.keys(this.state.errors)[0]] : ''
-                    }</Text>
-                    <Text style={{ ...Styles.forgotPassword }} onPress={() => Actions.push('ForgotPassword')}>Forgot Password ?</Text>
-                    <Text style={{ padding: 10, textAlign: "center" }} onPress={() => Actions.SignUp()}>New here, Sign up?</Text>
+                    <KeyboardAvoidingView behavior='position'>
+                        <Text style={CustomStyle.headText}>Welcome back, lets get you signed in.</Text>
+                        <TextInput
+                            style={CustomStyle.inputStyle}
+                            placeholder="Phone Number"
+                            returnKeyType="next"
+                            onChangeText={val => this.setState({ contactNo: val.trim() })}
+                            keyboardType='number-pad'
+                            maxLength={10}
+                        />
+                        <TextInput
+                            style={CustomStyle.inputStyle}
+                            placeholder="Password"
+                            returnKeyType="done"
+                            onChangeText={val => this.setState({ password: val.trim() })}
+                            secureTextEntry={true}
+                        />
+                        <Text style={{ color: Colors.warningRed, fontSize: 12 }}>{
+                            this.state.errors != undefined ? this.state.errors[Object.keys(this.state.errors)[0]] : ''
+                        }</Text>
+                        <Text style={{ ...Styles.forgotPassword }} onPress={() => Actions.push('ForgotPassword')}>Forgot Password ?</Text>
+                        <Text style={{ padding: Dimens.wp('1.5'), textAlign: "center" }} onPress={() => Actions.SignUp()}>New here, Sign up?</Text>
+                    </KeyboardAvoidingView>
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
-                <RoundButton handleClick={this.handleClick} />
+                {/* <RoundButton handleClick={this.handleClick} /> */}
+                <FooterButton name='Login' icon='check' cta={this.handleClick} />
             </View >
         );
     }
@@ -140,9 +143,8 @@ const Styles = StyleSheet.create({
         // textDecorationLine: 'underline',
         marginTop: 20,
         marginBottom: 10,
-        padding: 10
+        padding: Dimens.wp('1.5')
     },
 })
 
-export default Login;
-
+export default Login

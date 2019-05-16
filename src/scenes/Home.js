@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, ToastAndroid, Alert } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, ToastAndroid, Alert, TextInput } from 'react-native'
 import Dimens from '../res/Dimens'
 import TruckListing from '../components/TruckListing'
 import { SecureStore } from 'expo'
@@ -11,7 +11,7 @@ import { IconButton } from 'react-native-paper';
 
 class Home extends Component {
     state = {
-
+        searchShown: false
     }
 
     list = [
@@ -113,6 +113,7 @@ class Home extends Component {
             Actions.replace('Login')
         }
     }
+
     cardPressed = e => {
         this.setState({
             currentCard: e
@@ -120,37 +121,71 @@ class Home extends Component {
             {
                 text: 'Yes',
                 onPress: () => Actions.CreateRideUserRequest({ data: e })
-                // ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
             },
             {
                 text: "No",
-                onPress: () => ToastAndroid.show('no pressed', ToastAndroid.SHORT)
+                onPress: () => { }
             }
         ],
-            { cancelable: false }
+            { cancelable: true }
         ))
+    }
+
+    searchBar = () => {
+        return (
+            <View style={{ alignItems: 'center', marginLeft: Dimens.padding / 6, marginRight: Dimens.padding / 6, borderRadius: 5, backgroundColor: Colors.White, justifyContent: 'space-between', flexDirection: 'row' }}>
+                <IconButton icon='arrow-back'
+                    color={Colors.muteTextColor}
+                    size={25}
+                    onPress={() => this.setState({ searchShown: false })}
+                />
+
+                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 0.9 }}>
+                    <TextInput ref={i => this.searchInput = i} placeholder="Search" style={{ flex: 1 }}></TextInput>
+                </View>
+
+                <IconButton icon="search"
+                    color={Colors.muteTextColor}
+                    size={25}
+                    onPress={() => this.setState({ searchShown: true }, () => this.searchInput.focus())}
+                />
+            </View>
+        )
+    }
+
+    topBar = () => {
+        return (
+            <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                <IconButton icon='menu'
+                    color={Colors.White}
+                    size={25}
+                    onPress={() => Actions.drawerOpen()}
+                />
+
+                <View style={{ backgroundColor: Colors.primaryColor, alignItems: 'center', justifyContent: 'center', flex: 0.8, flexDirection: 'row' }}>
+                    <Image source={require('../../assets/ic.png')} style={{ height: 30, width: 45, marginRight: 10 }} />
+                    <Text style={{ color: Colors.White, letterSpacing: 1, }}>{'Transporter'.toUpperCase()}</Text>
+                </View>
+
+                <IconButton icon="search"
+                    color={Colors.White}
+                    size={25}
+                    onPress={() => this.setState({ searchShown: true }, () => this.searchInput.focus())}
+                />
+            </View>
+        )
     }
 
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
                 <View style={{ backgroundColor: Colors.primaryColor, height: Dimens.statusBarHeight }} />
-                <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ backgroundColor: Colors.primaryColor, padding: Dimens.padding / 3, }}>
 
-                    <IconButton icon='menu'
-                        color={Colors.White}
-                        size={25}
-                        onPress={() => Actions.drawerOpen()}
-                    />
+                    {
+                        this.state.searchShown ? this.searchBar() : this.topBar()
+                    }
 
-                    <View style={{ backgroundColor: Colors.primaryColor, alignItems: 'center', flex: 0.8 }}>
-                        <Image source={require('../../assets/ic.png')} style={{ height: 40, width: 60 }} />
-                        <Text style={{ color: Colors.White, letterSpacing: 1, }}>{'Transporter'.toUpperCase()}</Text>
-                    </View>
-
-                    <View style={{ flex: 0.1, justifyContent: 'flex-end', alignItems: 'center' }}>
-                        {/* <Image source={require('../../assets/ham.png')} style={{ height: 20, width: 20 }} /> */}
-                    </View>
                 </View>
 
                 <ScrollView style={Styles.rootView}>
@@ -164,6 +199,7 @@ class Home extends Component {
 const Styles = StyleSheet.create({
     rootView: {
         padding: Dimens.padding / 2,
+        paddingTop: 0,
         flexGrow: 1
     }
 })

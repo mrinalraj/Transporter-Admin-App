@@ -6,6 +6,7 @@ import { Title, FAB } from 'react-native-paper'
 import RidesListing from '../../components/RidesListing'
 import { Actions } from 'react-native-router-flux';
 import NavBar from '../../components/NavBar';
+import FooterButton from '../../components/FooterButton';
 
 class MyRides extends Component {
     state = {
@@ -102,20 +103,22 @@ class MyRides extends Component {
 
                 <NavBar title="My Rides" />
 
-                <Picker style={{
+                <View style={{
                     marginLeft: Dimens.padding / 2,
-                    marginRight: Dimens.padding / 2,
-                    color: Colors.White
-                }}
-                    selectedValue={this.state.filter}
-                    onValueChange={(itemValue, itemIndex) => this.setState({ filter: itemValue })}>
-                    {
-                        this.filters.map((filter, i) => <Picker.Item key={i} label={filter} value={filter} />)
-                    }
-                </Picker>
+                    marginRight: Dimens.padding / 2, backgroundColor: Colors.White, borderRadius: 5
+                }}>
+                    <Picker
+                        style={{ margin: -4, marginEnd: -11, marginStart: -5 }}
+                        selectedValue={this.state.filter}
+                        onValueChange={(itemValue, itemIndex) => this.setState({ filter: itemValue })}>
+                        {
+                            this.filters.map((filter, i) => <Picker.Item key={i} label={filter} value={filter} />)
+                        }
+                    </Picker>
+                </View>
 
-                <View style={{ flex: 1, padding: Dimens.padding / 2, paddingBottom: 0 }}>
-                    <ScrollView contentContainerStyle={{ flexGrow: 2, marginBottom: 20 }} showsVerticalScrollIndicator={false}>
+                <View style={{ flex: 1, padding: Dimens.padding / 2, paddingBottom: Dimens.footerButtonHeight, }}>
+                    <ScrollView contentContainerStyle={{ flexGrow: 2,}} showsVerticalScrollIndicator={false}>
                         {
                             this.list.map((e, i) => {
                                 if (this.state.filter == '---- Select Filter ----')
@@ -126,7 +129,8 @@ class MyRides extends Component {
                         }
                     </ScrollView>
                 </View>
-                <FAB style={{ position: 'absolute', bottom: Dimens.padding / 2, right: Dimens.padding / 2 }} label="Create Ride" icon='add' onPress={() => Actions.CreateRide()} />
+                {/* <FAB style={{ position: 'absolute', bottom: Dimens.padding / 2, right: Dimens.padding / 2 }} label="Create Ride" icon='add' onPress={() => Actions.CreateRide()} /> */}
+                <FooterButton name="Create Ride" icon="add" cta={() => Actions.CreateRide()} />
             </View >
         );
     }

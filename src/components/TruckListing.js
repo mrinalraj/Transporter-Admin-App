@@ -52,7 +52,7 @@ class TruckListing extends Component {
                 <View style={{ borderBottomColor: Colors.muteTextColor, borderBottomWidth: 1, flex: 1 }} />
 
                 <Card.Content>
-                    <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10 }}>
+                    <View style={{ flexDirection: 'row', paddingTop: 5, paddingBottom: -5 }}>
                         <Text style={{ flex: 0.5 }}>Trip Rate</Text>
                         <Text style={{ flex: 0.5, textAlign: 'right' }}> Rs. {this.state.rate} </Text>
                     </View>

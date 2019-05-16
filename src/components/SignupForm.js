@@ -46,7 +46,7 @@ class SignupForm extends React.Component {
         return (
 
             <View>
-                <Text style={CustomStyles.headText}>{`New here?\nlets get you onboard.`}</Text>
+                <Text style={CustomStyles.headText}>New here? Lets get you onboard.</Text>
                 <Picker
                     style={Styles.picker}
                     selectedValue={this.state.countryCode}
@@ -121,7 +121,9 @@ const Styles = StyleSheet.create({
 
     picker: {
         margin: -8,
-        marginTop: 40,
+        marginTop: 10,
+        borderColor: Colors.blackColor,
+        borderBottomWidth: 1
     },
 
 })

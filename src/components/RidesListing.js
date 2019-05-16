@@ -51,7 +51,7 @@ class RidesListing extends Component {
                 <View style={{ borderBottomColor: Colors.muteTextColor, borderBottomWidth: 1, flex: 1 }} />
 
                 <Card.Content>
-                    <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10, alignItems: 'center', justifyContent: 'space-around' }}>
+                    <View style={{ flexDirection: 'row', paddingTop: 10, paddingBottom: 0, alignItems: 'center', justifyContent: 'space-around' }}>
                         <Text style={{ flex: 0.6 }}>{this.state.status}</Text>
                         {/* <Button style={{ flex: 0.4, justifyContent: 'flex-end' }}> View Details </Button> */}
                         <Text style={{ flex: 0.4, textAlign: "right", padding: 10, paddingRight: 0, color: Colors.primaryColor }} onPress={this.props.viewDetails}>{`View Details`.toUpperCase()}</Text>

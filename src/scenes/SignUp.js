@@ -5,6 +5,7 @@ import SignupForm from '../components/SignupForm'
 import TopBanner from '../components/TopBanner';
 import LoadingDialog from '../components/LoadingDialog'
 import RoundButton from '../components/RoundButton'
+import FooterButton from '../components/FooterButton';
 
 class SignUp extends React.Component {
 
@@ -83,15 +84,16 @@ class SignUp extends React.Component {
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingBottom: Dimens.footerButtonHeight }}>
                 <TopBanner />
-                <KeyboardAvoidingView behavior='position'>
-                    <ScrollView scrollEnabled={true} contentContainerStyle={Styles.scrollView} showsVerticalScrollIndicator={false}>
+                <ScrollView scrollEnabled={true} contentContainerStyle={Styles.scrollView} showsVerticalScrollIndicator={false}>
+                    <KeyboardAvoidingView behavior='position'>
                         <SignupForm changeText={this.changeText} />
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
-                <RoundButton handleClick={this.handleSignupDmmy} />
+                {/* <RoundButton handleClick={this.handleSignupDmmy} /> */}
+                <FooterButton name="Sign Up" icon="check" cta={this.handleSignup} />
             </View>
         );
     }
@@ -101,10 +103,9 @@ const Styles = StyleSheet.create({
     statusBar: {
         height: Dimens.statusBarHeight
     },
+    // z79qe2
     scrollView: {
-        paddingRight: Dimens.padding,
-        paddingTop: Dimens.padding,
-        paddingLeft: Dimens.padding,
+        padding: Dimens.padding / 2,
         flexGrow: 2,
         zIndex: -1
     },

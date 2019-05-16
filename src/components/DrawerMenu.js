@@ -5,6 +5,7 @@ import { Actions } from 'react-native-router-flux'
 import Dimens from '../res/Dimens'
 import { SecureStore } from 'expo'
 import { ACCESS_TOKEN } from '../res/Constants'
+import Colors from '../res/Colors';
 
 class DrawerMenu extends Component {
     state = {
@@ -29,25 +30,26 @@ class DrawerMenu extends Component {
 
     render() {
         return (
-            <View style={{ flex: 2, marginTop: Dimens.statusBarHeight + 50 }}>
-                <Text style={{
-                    textAlign: "center",
-                    fontSize: 22,
-                    letterSpacing: 1,
-                    marginBottom: 50
-                }}>Transporter</Text>
+            <View style={{ flex: 2, }}>
+                <View style={{ paddingTop: Dimens.statusBarHeight, height: Dimens.hp('20'), justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.primaryColor }}>
+                    <Text style={{
+                        color: Colors.White,
+                        fontSize: 22,
+                        letterSpacing: 1,
+                    }}>Transporter</Text>
+                </View>
 
                 <List.Section>
-                    <List.Item title="My Rides" onPress={() => this.navigate('MyRides')} />
-                    {/* <List.Item title="My Subscription" onPress={() => this.navigate('Vehicles')} /> */}
-                    <List.Item title="My Requests" onPress={() => this.navigate('MyRequests')} />
-                    <List.Item title="Market Rate" onPress={() => this.navigate('MarketRate')} />
-                    <List.Item title="Vehicles" onPress={() => this.navigate('Vehicles')} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="My Rides" onPress={() => this.navigate('MyRides')} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="My Requests" onPress={() => this.navigate('MyRequests')} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="My Subscription" onPress={() => { }} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="Vehicles" onPress={() => this.navigate('Vehicles')} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="Market Rate" onPress={() => this.navigate('MarketRate')} />
                 </List.Section>
                 <List.Section>
-                    <List.Item title="My Profile" onPress={() => this.navigate('Profile')} />
-                    <List.Item title="Change Password" onPress={() => this.navigate('ChangePassword', { changeType: 'current' })} />
-                    <List.Item title="Logout" onPress={async () => {
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="My Profile" onPress={() => this.navigate('Profile')} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="Change Password" onPress={() => this.navigate('ChangePassword', { changeType: 'current' })} />
+                    <List.Item style={{ paddingTop: 5, paddingBottom: 5 }} title="Logout" onPress={async () => {
                         Alert.alert('Are you sure?', 'Are you sure you want to logout?', [
                             {
                                 text: 'Yes',

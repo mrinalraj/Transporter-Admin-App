@@ -4,6 +4,7 @@ import Colors from '../res/Colors'
 import { Title, Subheading, Button, } from 'react-native-paper'
 import Dimens from '../res/Dimens'
 import NavBar from '../components/NavBar';
+import FooterButton from '../components/FooterButton';
 
 class CreateRideUserRequest extends Component {
     state = {
@@ -24,16 +25,13 @@ class CreateRideUserRequest extends Component {
         return (
             <View style={{ backgroundColor: Colors.primaryColor, flex: 1, }}>
                 <NavBar title="Create Ride" />
-                <View style={{ padding: Dimens.padding / 2 }}>
-
-                    {/* <View style={{ backgroundColor: Colors.primaryColor, height: Dimens.statusBarHeight }} /> */}
-                    {/* <Title style={{ color: Colors.White }}>Create ride</Title> */}
-                    <Subheading style={{ color: Colors.White }}>Create a ride with the following details</Subheading>
+                <ScrollView contentContainerStyle={{ flexGrow: 2, padding: Dimens.padding / 2, paddingTop: Dimens.padding / 4 }}>
                     <KeyboardAvoidingView behavior='position'>
-                        <ScrollView style={{ flexGrow: 2, marginTop: 20 }}>
+                        <Subheading style={{ color: Colors.White }}>Create a ride with the following details</Subheading>
+                        <View style={{ marginTop: 10, }}>
                             <Text style={Styles.labelText}>Truck Name</Text>
                             <View style={{ backgroundColor: Colors.White, paddingRight: 10, paddingLeft: 10, borderRadius: 4, marginBottom: 20 }}>
-                                <Picker >
+                                <Picker style={{ margin: -4, marginStart: -8, marginEnd: -8 }}>
                                     {this.renderList()}
                                 </Picker>
                             </View>
@@ -42,16 +40,14 @@ class CreateRideUserRequest extends Component {
                             <Text style={Styles.labelText}>Drop Location</Text>
                             <TextInput placeholder="Drop Location" editable={false} value={this.state.to.place} style={Styles.inputStyle}></TextInput>
                             <Text style={Styles.labelText}>Pickup Date</Text>
-                            <TextInput placeholder="Pickup Date" editable={true} value={this.state.to.time} style={Styles.inputStyle}></TextInput>
+                            <TextInput placeholder="Pickup Date" editable={false} value={this.state.to.time} style={Styles.inputStyle} value={this.state.time}></TextInput>
                             <Text style={Styles.labelText}>Drop Date</Text>
-                            <TextInput placeholder="Drop Date" editable={true} style={Styles.inputStyle}></TextInput>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Button color={Colors.muteTextColor} mode='contained' icon='check' style={{ marginTop: 60, width: Dimens.windowWidth * 0.4, backgroundColor: Colors.accentColor, }}>{'Create'.toUpperCase()}</Button>
-                            </View>
-
-                        </ScrollView>
+                            <TextInput placeholder="Drop Date" editable={false} style={Styles.inputStyle} value={this.state.time}></TextInput>
+                        </View>
                     </KeyboardAvoidingView>
-                </View>
+                </ScrollView>
+
+                <FooterButton name="Create" icon="check" cta={() => { }} />
             </View>
         );
     }

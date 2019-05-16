@@ -9,6 +9,7 @@ import { Actions } from 'react-native-router-flux';
 import Axios from 'axios';
 import { BASE_API, ACCESS_TOKEN } from '../res/Constants'
 import { SecureStore } from 'expo'
+import FooterButton from '../components/FooterButton';
 
 class ForgotPassword extends Component {
     state = {
@@ -28,16 +29,16 @@ class ForgotPassword extends Component {
         }).then(response => {
             this.setState({ visible: false })
             if (response.data.success) {
-                ToastAndroid.show(response.data.payload.result.message,ToastAndroid.SHORT)
+                ToastAndroid.show(response.data.payload.result.message, ToastAndroid.SHORT)
                 Actions.replace('OtpScreen', { submitAction: this.otpSubmitAction, otpType: 'forgot', contactNo: this.state.contactNo })
             }
             else {
                 // ToastAndroid.show()
             }
         })
-        .catch(err=>{
-            console.log(err)
-        })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     render() {
@@ -45,9 +46,8 @@ class ForgotPassword extends Component {
             <View style={{ flex: 1 }}>
                 <TopBanner />
                 <ScrollView scrollEnabled={true} contentContainerStyle={{
-                    paddingRight: Dimens.padding,
-                    paddingTop: Dimens.padding,
-                    paddingLeft: Dimens.padding,
+                    padding: Dimens.padding / 2,
+                    paddingBottom: Dimens.footerButtonHeight,
                     flexGrow: 2,
                 }} showsVerticalScrollIndicator={false}>
                     <Text style={CustomStyle.headText}>{`Forgot password?\nNo worries, we will help you.`}</Text>
@@ -62,9 +62,10 @@ class ForgotPassword extends Component {
                         maxLength={10}
                     />
                     <Text style={{ ...Styles.forgotPassword }}>{`We will send a One time password\nCarrier rates may apply.`}</Text>
-                    <RoundButton handleClick={this.handleClick} />
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
+                {/* <RoundButton handleClick={this.handleClick} /> */}
+                <FooterButton name="Forgot Password" icon="arrow-forward" cta={this.handleClick} />
             </View >
         );
     }

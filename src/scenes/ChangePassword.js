@@ -4,6 +4,7 @@ import RoundButton from '../components/RoundButton'
 import TopBanner from '../components/TopBanner'
 import CustomStyle from '../res/CustomStyles'
 import Dimens from '../res/Dimens'
+import FooterButton from '../components/FooterButton';
 
 class ChangePassword extends Component {
 
@@ -30,9 +31,7 @@ class ChangePassword extends Component {
             <View style={{ flex: 1 }}>
                 <TopBanner />
                 <ScrollView scrollEnabled={true} contentContainerStyle={{
-                    paddingRight: Dimens.padding,
-                    paddingTop: Dimens.padding,
-                    paddingLeft: Dimens.padding,
+                    padding: Dimens.padding / 2,
                     flexGrow: 2,
                 }} showsVerticalScrollIndicator={false}>
                     <KeyboardAvoidingView behavior="position">
@@ -54,7 +53,7 @@ class ChangePassword extends Component {
                         />
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <RoundButton handleClick={this.handleClick} />
+                <FooterButton name="Change Password" icon="check" cta={() => { }} />
             </View >
         );
     }

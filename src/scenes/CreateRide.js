@@ -4,6 +4,7 @@ import { Button } from 'react-native-paper'
 import NavBar from '../components/NavBar'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
+import FooterButton from '../components/FooterButton';
 
 class CreateRide extends Component {
 
@@ -13,7 +14,7 @@ class CreateRide extends Component {
     }
 
     truckList = ["---- Select Truck ----", "Truck 1", "Truck 2", "Truck 3", "Truck 4"]
-    rideList = ["---- Select Truck ----", "Share", "Full",]
+    rideList = ["---- Select Ride ----", "Share", "Full",]
 
     renderBreakPoints = () => {
 
@@ -32,8 +33,8 @@ class CreateRide extends Component {
         return (
             <View style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
                 <NavBar title="Create Ride" />
-                <KeyboardAvoidingView behavior='position'>
-                    <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: Dimens.padding / 2, flexGrow: 2 }}>
+                <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: Dimens.padding / 2, flexGrow: 2 }}>
+                    <KeyboardAvoidingView behavior='position'>
                         <Text style={Styles.labelText}>Truck Name</Text>
                         <View style={{
                             borderRadius: 4,
@@ -42,7 +43,7 @@ class CreateRide extends Component {
                             backgroundColor: Colors.White,
                             marginBottom: 20
                         }}>
-                            <Picker style={{ marginStart: -8, marginTop: -3, marginBottom: -3, marginEnd: -8 }}
+                            <Picker style={{ marginStart: -8, marginTop: -4, marginBottom: -4, marginEnd: -8 }}
                                 selectedValue={this.state.truck}
                                 onValueChange={(itemValue, itemIndex) => this.setState({ truck: itemValue })}>
                                 {
@@ -59,7 +60,7 @@ class CreateRide extends Component {
                             backgroundColor: Colors.White,
                             marginBottom: 20
                         }}>
-                            <Picker style={{ marginStart: -8, marginTop: -3, marginBottom: -3, marginEnd: -8 }}
+                            <Picker style={{ marginStart: -8, marginTop: -4, marginBottom: -4, marginEnd: -8 }}
                                 selectedValue={this.state.rideType}
                                 onValueChange={(itemValue, itemIndex) => this.setState({ rideType: itemValue })}>
                                 {
@@ -84,12 +85,9 @@ class CreateRide extends Component {
                         <Text style={Styles.labelText}>Drop Time</Text>
                         <TextInput placeholder="Drop Time"
                             style={Styles.inputStyle}></TextInput>
-
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <Button color={Colors.muteTextColor} mode='contained' icon='check' style={{ marginTop: 60, width: Dimens.windowWidth * 0.4, backgroundColor: Colors.accentColor, }}>{'Save'.toUpperCase()}</Button>
-                        </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
+                <FooterButton name='Save' icon='check' cta={() => { }} />
             </View >
         );
     }

@@ -22,14 +22,13 @@ class MyRequests extends Component {
                             <Image source={{ uri: 'https://img.icons8.com/material-outlined/24/000000/search.png' }} style={{ height: 20, width: 20 }} />
                         </View>
                     </View>
-                    <View style={{ marginTop: 40, width: Dimens.windowWidth - Dimens.padding }}>
-
-                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                            {
-                                this.list.map((e, i) => <UserRequests key={i} />)
-                            }
-                        </ScrollView>
-                    </View>
+                </View>
+                <View>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: Dimens.padding / 2 }}>
+                        {
+                            this.list.map((e, i) => <UserRequests key={i} />)
+                        }
+                    </ScrollView>
                 </View>
             </View>
         );

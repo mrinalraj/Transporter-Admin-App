@@ -16,8 +16,8 @@ class UserRequests extends Component {
         return (
 
             <Card style={{
-                marginRight: 15,
-                width: Dimens.windowWidth - Dimens.padding
+                marginLeft: Dimens.padding / 2,
+                width: Dimens.windowWidth - Dimens.padding - Dimens.wp('15')
             }}>
                 <Card.Content>
                     <Title>Username</Title>
@@ -32,10 +32,10 @@ class UserRequests extends Component {
                     <Text style={{ marginTop: 20 }}>{`Electronics Goods`}</Text>
 
                 </Card.Content>
-                <Card.Actions style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <Button>Call Customer</Button>
-                    <Button>Reject</Button>
-                    <Button>Accept</Button>
+                <Card.Actions style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Button icon='phone'>Call</Button>
+                    <Button icon='close'>Reject</Button>
+                    <Button icon='check'>Accept</Button>
                 </Card.Actions>
             </Card >
         );
