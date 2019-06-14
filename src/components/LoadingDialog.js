@@ -4,7 +4,7 @@ import Colors from '../res/Colors'
 
 const LoadingDialog = ({ visible }) => {
     return (
-        <Modal dismissable={false} visible={visible} >
+        <Modal style={{ zIndex: 1000 }} dismissable={false} visible={visible} >
             <ActivityIndicator animating={true} size="large" color={Colors.accentColor} ></ActivityIndicator>
         </Modal>
     )

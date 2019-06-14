@@ -81,7 +81,6 @@ class OtpScreen extends Component {
             }
         }
 
-        ToastAndroid.show(JSON.stringify(data), ToastAndroid.SHORT)
 
         axios.post(`${BASE_API}${endpoint}`, data, {
             headers
@@ -92,19 +91,20 @@ class OtpScreen extends Component {
 
                 if (this.props.otpType === 'verify') {
                     // Alert.alert(result.message)
-                    Actions.Home()
+                    Actions.HomeDrawer()
+                    ToastAndroid.show('logged in 1', ToastAndroid.SHORT)
                 }
                 else {
                     try {
                         await SecureStore.setItemAsync(ACCESS_TOKEN, result.accessToken)
-                        Actions.replace('Home')
+                        ToastAndroid.show('logged in 2', ToastAndroid.SHORT)
+                        Actions.replace('HomeDrawer')
                     }
                     catch (e) {
                         ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
                     }
                 }
                 this.setState({ visible: false })
-                // ToastAndroid.show(result.accessToken, ToastAndroid.SHORT)
             }
             else {
                 let { error } = payload,

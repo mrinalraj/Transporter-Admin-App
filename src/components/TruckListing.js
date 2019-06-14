@@ -58,8 +58,8 @@ class TruckListing extends Component {
                     </View>
                 </Card.Content>
             </Card>
-        );
+        )
     }
 }
 
-export default TruckListing;
+export default TruckListing

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text, View, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native'
 import { Button } from 'react-native-paper'
 import NavBar from '../components/NavBar'
+import DatePicker from '../components/DatePicker'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
 import FooterButton from '../components/FooterButton';
@@ -79,12 +80,9 @@ class CreateRide extends Component {
                             this.renderBreakPoints()
                         }
 
-                        <Text style={Styles.labelText}>Pickup Time</Text>
-                        <TextInput placeholder="Pickup Time"
-                            style={Styles.inputStyle}></TextInput>
-                        <Text style={Styles.labelText}>Drop Time</Text>
-                        <TextInput placeholder="Drop Time"
-                            style={Styles.inputStyle}></TextInput>
+                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Pickup Time' placeholder='Pickup Time' onConfirm={()=>{}}/>
+                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Drop Time' placeholder='Drop Time' onConfirm={()=>{}}/>
+                        
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <FooterButton name='Save' icon='check' cta={() => { }} />

@@ -2,12 +2,8 @@ import React from 'react'
 import { View, Text, Picker, TextInput, StyleSheet, ToastAndroid, Alert, } from 'react-native'
 import Colors from '../res/Colors'
 import CountryCode from '../res/CountryCode'
-import RoundButton from './RoundButton'
 import CustomStyles from '../res/CustomStyles'
-import axios from 'axios'
-import { Actions } from 'react-native-router-flux'
-import { ACCESS_TOKEN, BASE_API, } from '../res/Constants'
-import { SecureStore } from 'expo'
+
 
 class SignupForm extends React.Component {
     state = {
@@ -39,7 +35,6 @@ class SignupForm extends React.Component {
     otpSubmitAction = () => {
 
     }
-
 
 
     render() {
@@ -95,6 +90,7 @@ class SignupForm extends React.Component {
                 <TextInput
                     onChangeText={text => {
                         this.setState({ passwordMatch: this.state.password === text })
+                        this.state.changeText({ passwordMatch: this.state.password === text })
                     }}
                     placeholder="Confirm password"
                     secureTextEntry={true}

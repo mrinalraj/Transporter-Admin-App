@@ -4,9 +4,9 @@ import Dimens from '../res/Dimens'
 import TruckListing from '../components/TruckListing'
 import { SecureStore } from 'expo'
 import { ACCESS_TOKEN } from '../res/Constants'
-import { Actions, } from 'react-native-router-flux';
-import Colors from '../res/Colors';
-import { IconButton } from 'react-native-paper';
+import { Actions, } from 'react-native-router-flux'
+import Colors from '../res/Colors'
+import { IconButton } from 'react-native-paper'
 
 
 class Home extends Component {

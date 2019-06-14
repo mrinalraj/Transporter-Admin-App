@@ -4,7 +4,6 @@ import Colors from '../res/Colors'
 import NavBar from '../components/NavBar'
 import Dimens from '../res/Dimens';
 import UserRequests from '../components/UserRequests'
-import Carousel from 'react-native-snap-carousel'
 
 class MyRequests extends Component {
 
@@ -14,15 +13,15 @@ class MyRequests extends Component {
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
-                <NavBar title="My Requests" />
-                <View style={{ padding: Dimens.padding / 2, paddingTop: 0 }}>
+                <NavBar title="My Requests" searchEnabled />
+                {/* <View style={{ padding: Dimens.padding / 2, paddingTop: 0 }}>
                     <View style={{ backgroundColor: Colors.White, flexDirection: 'row', borderRadius: 4, justifyContent: 'center' }}>
                         <TextInput placeholder="Search" style={{ flex: 0.9, ...Styles.inputStyle }} />
                         <View style={{ flex: 0.1, justifyContent: 'center', alignContent: 'center' }}>
                             <Image source={{ uri: 'https://img.icons8.com/material-outlined/24/000000/search.png' }} style={{ height: 20, width: 20 }} />
                         </View>
                     </View>
-                </View>
+                </View> */}
                 <View>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: Dimens.padding / 2 }}>
                         {

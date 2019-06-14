@@ -4,7 +4,6 @@ import Colors from '../res/Colors';
 import NavBar from './NavBar';
 import { Card, Subheading, Title, Button } from 'react-native-paper'
 import Dimens from '../res/Dimens'
-import Carousel from 'react-native-snap-carousel'
 
 
 class UserRequests extends Component {
@@ -32,10 +31,13 @@ class UserRequests extends Component {
                     <Text style={{ marginTop: 20 }}>{`Electronics Goods`}</Text>
 
                 </Card.Content>
-                <Card.Actions style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Button icon='phone'>Call</Button>
+                <Card.Actions style={{ marginTop: 30, flexDirection: 'row', }}>
+                    <Text style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>Call</Text>
+                    <Text style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>Reject</Text>
+                    <Text style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>Accept</Text>
+                    {/* <Button icon='phone'>Call</Button>
                     <Button icon='close'>Reject</Button>
-                    <Button icon='check'>Accept</Button>
+                    <Button icon='check'>Accept</Button> */}
                 </Card.Actions>
             </Card >
         );

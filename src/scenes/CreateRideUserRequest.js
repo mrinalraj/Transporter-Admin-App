@@ -12,14 +12,13 @@ class CreateRideUserRequest extends Component {
     }
 
     renderList = () => {
-        let vals = ['truck1', 'truck2', 'truck3', 'truck4']
+        let vals = ['Truck1', 'Truck2', 'Truck3', 'Truck4']
         return vals.map((t, i) => <Picker.Item key={i} value={t} label={t} />)
     }
 
     componentDidMount() {
         // ToastAndroid.show(JSON.stringify(this.state), ToastAndroid.SHORT)
     }
-
 
     render() {
         return (
@@ -35,14 +34,11 @@ class CreateRideUserRequest extends Component {
                                     {this.renderList()}
                                 </Picker>
                             </View>
-                            <Text style={Styles.labelText}>Pickup Location</Text>
-                            <TextInput placeholder="Pickup Location" editable={false} value={this.state.from.place} style={Styles.inputStyle}></TextInput>
-                            <Text style={Styles.labelText}>Drop Location</Text>
-                            <TextInput placeholder="Drop Location" editable={false} value={this.state.to.place} style={Styles.inputStyle}></TextInput>
-                            <Text style={Styles.labelText}>Pickup Date</Text>
-                            <TextInput placeholder="Pickup Date" editable={false} value={this.state.to.time} style={Styles.inputStyle} value={this.state.time}></TextInput>
-                            <Text style={Styles.labelText}>Drop Date</Text>
-                            <TextInput placeholder="Drop Date" editable={false} style={Styles.inputStyle} value={this.state.time}></TextInput>
+
+                            <Input label="Pickup Location" value={this.state.from.place}></Input>
+                            <Input label="Drop Location" value={this.state.to.place} ></Input>
+                            <Input label="Pickup Date" value={this.state.time}></Input>
+                            <Input label="Drop Date" value={this.state.time}></Input>
                         </View>
                     </KeyboardAvoidingView>
                 </ScrollView>
@@ -51,6 +47,15 @@ class CreateRideUserRequest extends Component {
             </View>
         );
     }
+}
+
+const Input = ({ label, value }) => {
+    return (
+        <View>
+            <Text style={Styles.labelText}>{label}</Text>
+            <TextInput placeholder={label} editable={false} value={value} style={Styles.inputStyle}></TextInput>
+        </View>
+    )
 }
 
 const Styles = StyleSheet.create({

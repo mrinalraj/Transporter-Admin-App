@@ -1,10 +1,14 @@
 import React from 'react'
 import { View, StyleSheet, Alert, KeyboardAvoidingView, ScrollView } from 'react-native'
-import Dimens from '../res/Dimens'
-import SignupForm from '../components/SignupForm'
-import TopBanner from '../components/TopBanner';
+import { ACCESS_TOKEN, BASE_API, } from '../res/Constants'
+import { Actions } from 'react-native-router-flux'
+import { SecureStore } from 'expo'
+import axios from 'axios'
+
 import LoadingDialog from '../components/LoadingDialog'
-import RoundButton from '../components/RoundButton'
+import Dimens from '../res/Dimens'
+import TopBanner from '../components/TopBanner';
+import SignupForm from '../components/SignupForm'
 import FooterButton from '../components/FooterButton';
 
 class SignUp extends React.Component {
