@@ -9,6 +9,7 @@ class VehiclesList extends Component {
     state = {
 
     }
+    
     render() {
         return (
             <Card style={{
@@ -19,22 +20,22 @@ class VehiclesList extends Component {
                 <Card.Content>
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ flex: 0.5 }}>
-                            <Text style={Styles.text}>Perpouse :</Text>
                             <Text style={Styles.text}>Truck Type :</Text>
+                            <Text style={Styles.text}>Truck Sub Type :</Text>
                             <Text style={Styles.text}>Truck Number</Text>
                             <Text style={Styles.text}>Registration Card</Text>
                             <Text style={Styles.text}>Insurance Recipt</Text>
-                            <Text style={Styles.text}>Wheight Capacity</Text>
-                            <Text style={Styles.text}>Volume Capacity</Text>
+                            {/* <Text style={Styles.text}>Wheight Capacity</Text>
+                            <Text style={Styles.text}>Volume Capacity</Text> */}
                         </View>
                         <View style={{ flex: 0.5 }}>
-                            <Text style={{ textAlign: 'right', ...Styles.text }}>Refrigrator</Text>
-                            <Text style={{ textAlign: 'right', ...Styles.text }}>Full</Text>
-                            <Text style={{ textAlign: 'right', ...Styles.text }}>UK 08A 9800</Text>
-                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }}>{`View`.toUpperCase()}</Text>
-                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }}>{`View`.toUpperCase()}</Text>
-                            <Text style={{ textAlign: 'right', ...Styles.text }}>10000 Kilograms</Text>
-                            <Text style={{ textAlign: 'right', ...Styles.text }}>1000 Litres</Text>
+                            <Text style={{ textAlign: 'right', ...Styles.text }}>{this.props.truckType}</Text>
+                            <Text style={{ textAlign: 'right', ...Styles.text }}>{this.props.truckSubType}</Text>
+                            <Text style={{ textAlign: 'right', ...Styles.text }}>{this.props.truckNumber}</Text>
+                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }}  onPress={()=>{}}>{`View`.toUpperCase()}</Text>
+                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }}  onPress={()=>{}}>{`View`.toUpperCase()}</Text>
+                            {/* <Text style={{ textAlign: 'right', ...Styles.text }}>10000 Kilograms</Text>
+                            <Text style={{ textAlign: 'right', ...Styles.text }}>1000 Litres</Text> */}
                         </View>
                     </View>
                 </Card.Content>

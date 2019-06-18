@@ -1,21 +1,52 @@
 import React, { Component } from 'react'
-import { Text, View, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native'
-import { Button } from 'react-native-paper'
+import { Text, View, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput, Alert, TouchableOpacity, } from 'react-native'
 import NavBar from '../components/NavBar'
 import DatePicker from '../components/DatePicker'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
 import FooterButton from '../components/FooterButton';
+import { SecureStore } from 'expo';
+import { ACCESS_TOKEN, BASE_API } from '../res/Constants';
+import Axios from 'axios';
+import LoadingDialog from '../components/LoadingDialog';
+import { Actions } from 'react-native-router-flux';
 
 class CreateRide extends Component {
 
     state = {
-        truck: '---- Select Truck ----',
-        rideList: '---- Select Truck ----'
+        truckList: [],
+        rideList: [],
+        vehiclesList: [],
+        pickup: {},
+        drop: {}
     }
 
-    truckList = ["---- Select Truck ----", "Truck 1", "Truck 2", "Truck 3", "Truck 4"]
-    rideList = ["---- Select Ride ----", "Share", "Full",]
+    componentDidMount() {
+        this._getAvailableTrucks()
+    }
+
+    _getAvailableTrucks = async () => {
+        this.setState({ loading: true })
+        let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        headers = {
+            accessToken
+        }
+
+        Axios.post(`${BASE_API}/listVehicle`, '', { headers })
+            .then(({ data }) => {
+                this.setState({ loading: false })
+                if (!data.success) {
+                    return alert(data.payload.error.message);
+                }
+                let vehiclesList = data.payload.result
+                // alert(JSON.stringify(data))
+                this.setState({ vehiclesList })
+            }).catch(err => {
+                this.setState({ loading: false })
+            })
+    }
+
+    rideList = ["Full", "Share",]
 
     renderBreakPoints = () => {
 
@@ -30,10 +61,20 @@ class CreateRide extends Component {
         }
     }
 
+    _onLocationSelect = (which, lat, lon, place) => {
+        this.setState({
+            [which]: {
+                lat, lon, place
+            }
+        })
+        Actions.pop()
+    }
+
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
                 <NavBar title="Create Ride" />
+                <LoadingDialog visible={this.state.loading} />
                 <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: Dimens.padding / 2, flexGrow: 2 }}>
                     <KeyboardAvoidingView behavior='position'>
                         <Text style={Styles.labelText}>Truck Name</Text>
@@ -48,7 +89,7 @@ class CreateRide extends Component {
                                 selectedValue={this.state.truck}
                                 onValueChange={(itemValue, itemIndex) => this.setState({ truck: itemValue })}>
                                 {
-                                    this.truckList.map((e, i) => <Picker.Item label={e} key={i} value={e} />)
+                                    this.state.vehiclesList.map((e, i) => <Picker.Item label={e.truckNumber} key={i} value={e._id} />)
                                 }
                             </Picker>
                         </View>
@@ -71,18 +112,26 @@ class CreateRide extends Component {
                         </View>
 
                         <Text style={Styles.labelText}>Pickup Location</Text>
-                        <TextInput placeholder="Pickup Location"
-                            style={Styles.inputStyle}></TextInput>
+                        <TouchableOpacity
+                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'pickup' })}>
+                            <TextInput editable={false} placeholder="Pickup Location"
+                                style={Styles.inputStyle} value={`${this.state.pickup.place} / ${this.state.pickup.lon}`} ></TextInput>
+                        </TouchableOpacity>
+
                         <Text style={Styles.labelText}>Drop Location</Text>
-                        <TextInput placeholder="Drop Location"
-                            style={Styles.inputStyle}></TextInput>
+                        <TouchableOpacity
+                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'drop' })}>
+                            <TextInput editable={false} placeholder="Drop Location"
+                                style={Styles.inputStyle} value={this.state.drop.place}></TextInput>
+                        </TouchableOpacity>
+
                         {
                             this.renderBreakPoints()
                         }
 
-                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Pickup Time' placeholder='Pickup Time' onConfirm={()=>{}}/>
-                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Drop Time' placeholder='Drop Time' onConfirm={()=>{}}/>
-                        
+                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Pickup Time' placeholder='Pickup Time' onConfirm={() => { }} />
+                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Drop Time' placeholder='Drop Time' onConfirm={() => { }} />
+
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <FooterButton name='Save' icon='check' cta={() => { }} />

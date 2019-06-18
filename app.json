@@ -4,7 +4,10 @@
 		"slug": "transporter-expo",
 		"privacy": "public",
 		"sdkVersion": "32.0.0",
-		"platforms": ["ios", "android"],
+		"platforms": [
+			"ios",
+			"android"
+		],
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -15,17 +18,24 @@
 			"image": "./assets/splash.png",
 			"resizeMode": "cover"
 		},
-		"assetBundlePatterns": ["**/*"],
+		"assetBundlePatterns": [
+			"**/*"
+		],
 		"ios": {
 			"bundleIdentifier": "com.transporter.app",
 			"supportsTablet": true
 		},
 		"android": {
 			"package": "com.transporter.app",
-			"permissions": [],
+			"permissions": [
+				"CAMERA",
+				"READ_EXTERNAL_STORAGE",
+				"WRITE_EXTERNAL_STORAGE",
+				"LOCATION"
+			],
 			"config": {
 				"googleMaps": {
-					"apiKey": "AIzaSyDu9JLR_CCvfdyuaYnkkkfFqJD8e1_Ro28"
+					"apiKey": "AIzaSyDu9JLR_CCvfdyuaYnkkkfFqJD8e1_Ro28",
 				}
 			}
 		},

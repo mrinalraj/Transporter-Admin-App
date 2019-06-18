@@ -22,6 +22,8 @@ import TruckLocationOnMap from './scenes/intermidiates/TruckLocationOnMap'
 import CreateRide from './scenes/CreateRide'
 import MyRequests from './scenes/MyRequests'
 import MarketRate from './scenes/MarketRate'
+import CreateVehicle from './scenes/CreateVehicle';
+import MapPickerCustom from './components/MapPickerCustom';
 
 
 class Routes extends React.Component {
@@ -94,9 +96,11 @@ class Routes extends React.Component {
                     <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar />
                     <Scene key="ChangePassword" component={ChangePassword} hideNavBar />
                     <Scene key="CreateRideUserRequest" component={CreateRideUserRequest} hideNavBar />
-                    <Scene key="FullDetail" component={FullDetail} hideNavBar></Scene>
-                    <Scene key="TruckLocationOnMap" component={TruckLocationOnMap} hideNavBar></Scene>
-                    <Scene key="CreateRide" component={CreateRide} hideNavBar></Scene>
+                    <Scene key="FullDetail" component={FullDetail} hideNavBar />
+                    <Scene key="TruckLocationOnMap" component={TruckLocationOnMap} hideNavBar />
+                    <Scene key="CreateRide" component={CreateRide} hideNavBar />
+                    <Scene key="CreateVehicle" component={CreateVehicle} hideNavBar />
+                    <Scene key="MapPickerCustom" component={MapPickerCustom} hideNavBar />
                 </Scene>
             </Router>
         );
