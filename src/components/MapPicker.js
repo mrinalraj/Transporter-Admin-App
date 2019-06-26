@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet, ActivityIndicator, TouchableOpacity, View, Text, Platform, PermissionsAndroid } from 'react-native'
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
+import { MapView, } from 'expo'
 
 
 const DEFAULT_DELTA = { latitudeDelta: 0.015, longitudeDelta: 0.0121 }
@@ -72,15 +72,9 @@ export default class LocationPicker extends Component {
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             )
 
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            if (granted === PermissionsAndroid.RESULTS.GRANTED)
                 this._getCurrentLocation()
-                console.log('Location permission granted')
-            } else {
-                console.log('Location permission denied')
-            }
-        } catch (err) {
-            console.warn(err)
-        }
+        } catch (err) { }
     }
 
     _getCurrentLocation = () => {
@@ -135,13 +129,13 @@ export default class LocationPicker extends Component {
                 ? this.getIndicator()
                 : <View style={styles.container}>
                     <MapView
-                        provider={PROVIDER_GOOGLE}
+                        provider={MapView.PROVIDER_GOOGLE}
                         style={styles.mapView}
                         initialRegion={this.state.coordinate}
 
                         onPress={this.onMapPress}
                         {...props}>
-                        <Marker draggable
+                        <MapView.Marker draggable
                             coordinate={this.state.marker}
                             onDragEnd={this.onMarkerDragEnd}
                         />

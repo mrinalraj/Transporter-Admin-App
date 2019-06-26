@@ -1,10 +1,13 @@
 import React from 'react'
 import MapPicker from '../components/MapPicker'
+
 import { View } from 'react-native'
-import { Permissions, Location } from 'expo';
-import LoadingDialog from './LoadingDialog';
-import { Accuracy } from 'expo-location';
-import Geocoder from 'react-native-geocoding';
+import { Permissions, Location, Accu } from 'expo'
+import LoadingDialog from '../components/LoadingDialog'
+// import { Accuracy } from 'expo-location'
+import Axios from 'axios';
+import { BASE_API, BASE_API_USER } from '../res/Constants';
+import { Actions } from 'react-native-router-flux';
 
 class MapPickerCustom extends React.Component {
     state = {
@@ -16,31 +19,38 @@ class MapPickerCustom extends React.Component {
     }
 
     _getLocationAsync = async () => {
-        this.setState({ visible: true })
-        let { status } = await Permissions.askAsync(Permissions.LOCATION)
+        this.setState({ loading: true })
+        const { status } = await Permissions.askAsync(Permissions.LOCATION)
+
         if (status !== 'granted') {
             alert('we need permission')
         }
 
-        let location = await Location.getCurrentPositionAsync({ accuracy: Accuracy.Highest })
+        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
         this.setState({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-            visible: false
+            loading: false
         })
-        console.log(location.coords.longitude, location)
     }
 
     _onLocationSelect = (which, latitude, longitude) => {
-        // Geocoder.init('AIzaSyDu9JLR_CCvfdyuaYnkkkfFqJD8e1_Ro28')
-        Geocoder.init('AIzaSyBLL9qaRIogGocE7gzxCQi58BYHJB9-0dQ')
-        // Geocoder.from(latitude, longitude)
-        //     .then(json => {
-        //         console.log(json.results[0].address_components[0])
-        //         this.props.onLocationSelect(which, latitude, longitude, json.results[0].address_components[0])
-        //     })
-        //     .catch(err => console.log(err))
-        this.props.onLocationSelect(which, latitude, longitude, '')
+        this.setState({ loading: true })
+        Axios.post(`${BASE_API_USER}/placeAPI?lat=${latitude}&lng=${longitude}`, { lat: latitude, lng: longitude })
+            .then(({ data }) => {
+                if (!data.success)
+                    return alert('error finding address')
+                const addressComp = data.payload.result.results[0]
+                    // , place = addressComp.address_components.filter(e => e.types.includes('administrative_area_level_2'))[0]
+                    // , subPlace = addressComp.address_components.filter(e => e.types.includes('locality'))[0]
+                    // , address = `${place} / ${subPlace}`
+                    , address = addressComp["formatted_address"].split(', ')
+                    , city = address.slice(-3, -2)
+                    , locality = address.slice(-5, -4)
+                this.setState({ loading: false })
+                this.props.onLocationSelect(which, latitude, longitude, `${city}/${locality}`)
+            })
+            .catch(err => { alert(err); Actions.pop() })
     }
 
     _renderMap = () => {
@@ -64,7 +74,7 @@ class MapPickerCustom extends React.Component {
                 {
                     this._renderMap()
                 }
-                <LoadingDialog visible={this.state.visible} />
+                <LoadingDialog visible={this.state.loading} />
             </View>
         )
     }

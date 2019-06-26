@@ -61,10 +61,39 @@ class CreateRide extends Component {
         }
     }
 
-    _onLocationSelect = (which, lat, lon, place) => {
+    _validate = () => {
+        return new Promise((resolve, reject) => {
+            const { startAddress, endAddress, rideType, vehicleId, startTime, endTime } = this.state;
+            (!!startTime && !!endTime && !!rideType && !!vehicleId && startAddress.location.length > 0 && endAddress.location.length > 0) ? resolve() : reject()
+        })
+    }
+
+    _createRideRequest = () => {
+        this._validate()
+            .then(async () => {
+                this.setState({ loading: true })
+                const { startTime, endTime, startAddress, endAddress, vehicleId, rideType } = this.state
+                    , accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+                Axios.post(`${BASE_API}/addRide`, { startTime, endTime, startAddress, endAddress, vehicleId, rideType }, { headers: { accessToken } })
+                    .then(({ data }) => {
+                        this.setState({ loading: false })
+                        if (!data.success)
+                            return alert(data.payload.error.message)
+
+                        Actions.pop()
+                    })
+                    .catch(err => alert(err))
+            })
+            .catch(() => {
+                alert('All fields are mandatory!')
+            })
+    }
+
+    _onLocationSelect = (which, lat, long, address) => {
         this.setState({
             [which]: {
-                lat, lon, place
+                location: [lat, long],
+                address
             }
         })
         Actions.pop()
@@ -87,7 +116,7 @@ class CreateRide extends Component {
                         }}>
                             <Picker style={{ marginStart: -8, marginTop: -4, marginBottom: -4, marginEnd: -8 }}
                                 selectedValue={this.state.truck}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ truck: itemValue })}>
+                                onValueChange={(itemValue, itemIndex) => this.setState({ vehiclesId: itemValue })}>
                                 {
                                     this.state.vehiclesList.map((e, i) => <Picker.Item label={e.truckNumber} key={i} value={e._id} />)
                                 }
@@ -113,28 +142,29 @@ class CreateRide extends Component {
 
                         <Text style={Styles.labelText}>Pickup Location</Text>
                         <TouchableOpacity
-                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'pickup' })}>
+                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'startAddress' })}>
                             <TextInput editable={false} placeholder="Pickup Location"
-                                style={Styles.inputStyle} value={`${this.state.pickup.place} / ${this.state.pickup.lon}`} ></TextInput>
+                                style={Styles.inputStyle} value={this.state.startAddress.address} ></TextInput>
                         </TouchableOpacity>
 
                         <Text style={Styles.labelText}>Drop Location</Text>
                         <TouchableOpacity
-                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'drop' })}>
+                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'endAddress' })}>
                             <TextInput editable={false} placeholder="Drop Location"
-                                style={Styles.inputStyle} value={this.state.drop.place}></TextInput>
+                                style={Styles.inputStyle} value={this.state.endAddress.address}></TextInput>
                         </TouchableOpacity>
 
                         {
                             this.renderBreakPoints()
                         }
 
-                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Pickup Time' placeholder='Pickup Time' onConfirm={() => { }} />
-                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Drop Time' placeholder='Drop Time' onConfirm={() => { }} />
+                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Pickup Time' placeholder='Pickup Time' onConfirm={() => { (datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp }) }} />
+                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Drop Time' placeholder='Drop Time' onConfirm={() => { (datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp }) }} />
 
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <FooterButton name='Save' icon='check' cta={() => { }} />
+                <FooterButton name='Save' icon='check' cta={this._createRideRequest} disabled={this.state.loading}/>
+                <LoadingDialog visible={this.state.loading} />
             </View >
         );
     }

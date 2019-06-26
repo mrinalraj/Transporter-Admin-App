@@ -92,14 +92,14 @@ class OtpScreen extends Component {
                 this.setState({ visible: false })
                 if (this.props.otpType === 'verify') {
                     Alert.alert(result.message)
-                    Actions.reset('HomeDrawer')
+                    Actions.reset('CheckLoginState')
                     // ToastAndroid.show('logged in 1', ToastAndroid.SHORT)
                 }
                 else {
                     try {
                         await SecureStore.setItemAsync(ACCESS_TOKEN, result.accessToken)
                         ToastAndroid.show('logged in 2', ToastAndroid.SHORT)
-                        Actions.reset('HomeDrawer')
+                        Actions.reset('CheckLoginState')
                     }
                     catch (e) {
                         ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
@@ -113,7 +113,7 @@ class OtpScreen extends Component {
                 Alert.alert('Error Occured, please try again.', message)
             }
         })
-            .catch(err => console.log(err))
+            .catch(err => alert(JSON.stringify(err)))
     }
 
 

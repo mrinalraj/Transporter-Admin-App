@@ -24,73 +24,34 @@ import MyRequests from './scenes/MyRequests'
 import MarketRate from './scenes/MarketRate'
 import CreateVehicle from './scenes/CreateVehicle';
 import MapPickerCustom from './components/MapPickerCustom';
+import CheckLoginState from './scenes/CheckLoginState';
 
 
 class Routes extends React.Component {
-    state = {
-    }
-
-    // onBackPress() {
-    //     if (backButtonPressedOnceToExit) {
-    //         BackAndroid.exitApp();
-    //     } else {
-    //         if (Actions.currentScene !== 'Home') {
-    //             Actions.pop();
-    //             return true;
-    //         } else {
-    //             backButtonPressedOnceToExit = true;
-    //             ToastAndroid.show("Press Back Button again to exit", ToastAndroid.SHORT);
-    //             //setting timeout is optional
-    //             setTimeout(() => { backButtonPressedOnceToExit = false }, 2000);
-    //             return true;
-    //         }
-    //     }
-    // }
-
-    componentDidMount() {
-        this.loginState()
-    }
-
-    loginState = async () => {
-        try {
-            const loggedInState = await SecureStore.getItemAsync(ACCESS_TOKEN)
-            this.setState({
-                loggedInState: loggedInState !== null
-            })
-        }
-        catch (error) {
-            ToastAndroid.show(this.state.loggedInState)
-        }
-    }
 
     render() {
 
         return (
             <Router>
                 <Scene key="root" hideNavBar>
+                    <Scene key="CheckLoginState" component={CheckLoginState} initial hideNavBar />
                     <Drawer
                         key="HomeDrawer"
                         hideNavBar
-                        initial={this.props.isLogged}
                         contentComponent={DrawerMenu}
                         drawerWidth={Dimens.windowWidth * 0.6}
                         hideDrawerButton={true}
                         drawerPosition="left">
-
                         <Scene key="Home" component={Home} hideNavBar />
                         <Scene key="Profile" component={Profile} hideNavBar />
                         <Scene key="Vehicles" component={Vehicles} hideNavBar />
                         <Scene key="MyRides" component={MyRides} hideNavBar />
                         <Scene key="MyRequests" component={MyRequests} hideNavBar />
                         <Scene key="MarketRate" component={MarketRate} hideNavBar />
-
                     </Drawer>
-
                     <Scene key="Login"
                         component={Login}
-                        initial={!this.props.isLogged}
                         hideNavBar />
-
                     <Scene key="SignUp" component={SignUp} hideNavBar />
                     <Scene key="OtpScreen" component={OtpScreen} hideNavBar />
                     <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar />

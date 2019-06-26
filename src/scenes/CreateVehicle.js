@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { Text, View, Image, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput, Alert } from 'react-native'
+import { Text, View, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput, Alert } from 'react-native'
 import NavBar from '../components/NavBar'
-import DatePicker from '../components/DatePicker'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
 import FooterButton from '../components/FooterButton'
 import { Button, List } from 'react-native-paper';
-import { ImagePicker, Permissions, Constants, SecureStore } from 'expo'
+import { ImagePicker, Permissions, SecureStore } from 'expo'
 import { BottomSheet, SnackBar } from 'react-native-btr'
 import LoadingDialog from '../components/LoadingDialog'
 import { RNS3 } from 'react-native-aws3'
@@ -31,13 +30,10 @@ class CreateVehicle extends Component {
     renderSubType = () => {
         switch (this.state.truckType) {
             case 'Open':
-
                 return this.truckSubTypeOpen.map((e, i) => <Picker.Item label={e} key={i} value={e} />)
             case 'Container':
-
                 return this.truckSubTypeContainer.map((e, i) => <Picker.Item label={e} key={i} value={e} />)
             case 'Trailer':
-
                 return this.truckSubTypeTrailer.map((e, i) => <Picker.Item label={e} key={i} value={e} />)
             default:
                 return <Picker.Item label='Select Truck type first' value='' />
@@ -50,12 +46,10 @@ class CreateVehicle extends Component {
 
 
     getPermissionAsync = async () => {
-
         const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to make this work!');
         }
-
     }
 
     truckTypeChanged = itemValue => {
@@ -99,23 +93,16 @@ class CreateVehicle extends Component {
             result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true
-                // base64: true
             })
         }
         else {
             result = await ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true
-                // base64: true
             })
-
         }
 
-        console.log(result)
-
         if (!result.cancelled) {
-
-            // type === 'rc' ? this.setState({ rcImageUri: result.base64 }) : this.setState({ insuranceImageUri: result.base64 })
 
             const file = {
                 uri: result.uri,
@@ -135,12 +122,11 @@ class CreateVehicle extends Component {
             RNS3.put(file, options).then(response => {
                 this.setState({ loading: false, loadingText: `` })
                 if (response.status !== 201) {
-                    return console.log('failed to upload')
+                    return alert('Failed to upload. Please try again.')
                 }
-                console.log('** body **', response.body)
                 type === 'rc' ? this.setState({ rcCardUrl: response.body.postResponse.location }) : this.setState({ insuranceUrl: response.body.postResponse.location })
 
-            }).catch(err => { this.loading(false); console.log(err) })
+            }).catch(err => this.loading(false))
         }
         else {
             this.setState({ loading: false, loadingText: `` })
@@ -149,7 +135,6 @@ class CreateVehicle extends Component {
 
     _showRcImageOrButton = () => {
         if (this.state.rcCardUrl) {
-            // return <Image style={{height : 100 , width : 60}} source={{ uri: this.state.rcImageUri }} />
             return <Text style={{ color: Colors.White, paddingTop: 10, paddingBottom: 10, fontSize: 25 }}>Uploaded</Text>
         }
         return <Button style={{ marginBottom: 10, marginTop: 10 }} color={Colors.accentColor} onPress={() => this._startPicker('rc')} mode='outlined'>Select File</Button>
@@ -157,7 +142,6 @@ class CreateVehicle extends Component {
 
     _showInsuranceImageOrButton = () => {
         if (this.state.insuranceUrl) {
-            // return <Image style={{height : 100 , width : 60}} source={{ uri: this.state.insuranceImage }} />
             return <Text style={{ color: Colors.White, paddingTop: 10, paddingBottom: 10, fontSize: 25 }}>Uploaded</Text>
         }
         return <Button style={{ marginBottom: 10, marginTop: 10 }} color={Colors.accentColor} onPress={() => this._startPicker('insurance')} mode='outlined'>Select File</Button>
@@ -201,7 +185,6 @@ class CreateVehicle extends Component {
                 Axios.post(`${BASE_API}/addVehicle`, data, { headers })
                     .then(response => {
                         this.setState({ loading: false })
-                        // Alert.alert('', JSON.stringify(response.data))
                         this.setState({ SnackBarVisible: true })
                         setTimeout(() => {
                             Actions.pop()

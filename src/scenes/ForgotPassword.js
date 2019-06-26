@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, Text, TextInput, ToastAndroid } from 'react-native'
-import RoundButton from '../components/RoundButton'
 import LoadingDialog from '../components/LoadingDialog'
 import TopBanner from '../components/TopBanner'
 import CustomStyle from '../res/CustomStyles'
@@ -22,23 +21,18 @@ class ForgotPassword extends Component {
     }
 
     handleClick = () => {
-        // Actions.replace('ChangePassword')
         this.setState({ visible: true })
         Axios.post(`${BASE_API}/sendOtp`, {
             contactNo: this.state.contactNo
-        }).then(response => {
+        }).then(({ data }) => {
             this.setState({ visible: false })
-            if (response.data.success) {
-                ToastAndroid.show(response.data.payload.result.message, ToastAndroid.SHORT)
-                Actions.replace('OtpScreen', { submitAction: this.otpSubmitAction, otpType: 'forgot', contactNo: this.state.contactNo })
-            }
-            else {
-                // ToastAndroid.show()
-            }
+            if (!data.success)
+                return alert(data.payload.error.messsage)
+            ToastAndroid.show(response.data.payload.result.message, ToastAndroid.SHORT)
+            Actions.replace('OtpScreen', { submitAction: this.otpSubmitAction, otpType: 'forgot', contactNo: this.state.contactNo })
+
         })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(err => alert(JSON.stringify(err)))
     }
 
     render() {
@@ -64,7 +58,6 @@ class ForgotPassword extends Component {
                     <Text style={{ ...Styles.forgotPassword }}>{`We will send a One time password\nCarrier rates may apply.`}</Text>
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
-                {/* <RoundButton handleClick={this.handleClick} /> */}
                 <FooterButton name="Forgot Password" icon="arrow-forward" cta={this.handleClick} />
             </View >
         );

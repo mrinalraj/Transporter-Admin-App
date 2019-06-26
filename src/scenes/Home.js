@@ -3,15 +3,22 @@ import { View, Text, Image, StyleSheet, ScrollView, ToastAndroid, Alert, TextInp
 import Dimens from '../res/Dimens'
 import TruckListing from '../components/TruckListing'
 import { SecureStore } from 'expo'
-import { ACCESS_TOKEN } from '../res/Constants'
+import { ACCESS_TOKEN, BASE_API } from '../res/Constants'
 import { Actions, } from 'react-native-router-flux'
 import Colors from '../res/Colors'
-import { IconButton } from 'react-native-paper'
+import { IconButton, ActivityIndicator } from 'react-native-paper'
+import LoadingDialog from '../components/LoadingDialog'
+import Axios from 'axios'
+
+const CancelToken = Axios.CancelToken,
+    source = CancelToken.source()
 
 
 class Home extends Component {
     state = {
-        searchShown: false
+        searchShown: false,
+        loading: false,
+        list: []
     }
 
     list = [
@@ -107,11 +114,31 @@ class Home extends Component {
         }
     ]
 
-    async componentDidMount() {
-        let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
-        if (accessToken == null) {
-            Actions.replace('Login')
+    _getData = async (page = 1) => {
+        this.setState({ loading: true })
+        const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        if (!!accessToken) {
+            Axios.post(`${BASE_API}/listUserRide`, {
+                limit: 15,
+                page,
+            }, { headers: { accessToken }, cancelToken: source.token })
+                .then(async ({ data }) => {
+                    this.setState({ loading: false })
+                    if (!data.success)
+                        return alert(data.payload.error.message)
+                    return this.setState({ list: data.payload.result.data })
+
+                })
+                .catch(error => alert(error))
         }
+    }
+
+    componentDidMount() {
+        this._getData()
+    }
+
+    componentWillUnMount() {
+        source.cancel()
     }
 
     cardPressed = e => {
@@ -124,10 +151,10 @@ class Home extends Component {
             },
             {
                 text: "No",
-                onPress: () => { }
+                onPress: () => { this.setState({ currentCard: undefined }) }
             }
         ],
-            { cancelable: true }
+            { cancelable: false }
         ))
     }
 
@@ -189,8 +216,12 @@ class Home extends Component {
                 </View>
 
                 <ScrollView style={Styles.rootView}>
-                    {this.list.map((e, i) => <TruckListing key={i} {...e} onPress={() => this.cardPressed(e)} />)}
+                    {this.state.list.map((e, i) => <TruckListing key={i} {...e} onPress={() => this.cardPressed(e)} />)}
+                    {
+                        this.state.loading ? <ActivityIndicator animating={true} size="small" color={Colors.accentColor} ></ActivityIndicator> : null
+                    }
                 </ScrollView>
+
             </View>
         );
     }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, Text, TextInput, KeyboardAvoidingView, ToastAndroid } from 'react-native'
-import RoundButton from '../components/RoundButton'
 import TopBanner from '../components/TopBanner'
 import CustomStyle from '../res/CustomStyles'
 import Dimens from '../res/Dimens'

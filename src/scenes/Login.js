@@ -4,7 +4,6 @@ import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
 import CustomStyle from '../res/CustomStyles'
 import TopBanner from '../components/TopBanner'
-import RoundButton from '../components/RoundButton'
 import { Actions } from 'react-native-router-flux'
 import { SecureStore } from 'expo'
 import { ACCESS_TOKEN, BASE_API } from '../res/Constants';
@@ -78,7 +77,7 @@ class Login extends Component {
             try {
                 await SecureStore.deleteItemAsync(ACCESS_TOKEN)
                 await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
-                Actions.replace('HomeDrawer')
+                Actions.replace('CheckLoginState')
             }
             catch (error) {
                 Alert.alert("Error Occured", JSON.stringify(error))
@@ -95,7 +94,7 @@ class Login extends Component {
             contactNo == undefined ? errors.contactNo = 'Phone Number is Required' : contactNo.trim().length < 10 ? errors.contactNo = 'Phone number should be 10 digits long' : ''
             password == undefined || password.trim() == '' ? errors.password = 'Please enter a password' : ''
             this.passwordSchema.is().min(8).is().max(16)
-            this.passwordSchema.validate(password) ? errors.password = 'Password should be more than 8 and less than 16 chaachters long' : ''
+            // this.passwordSchema.validate(password) ? errors.password = 'Password should be more than 8 and less than 16 chaachters long' : ''
             Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
         })
     }
@@ -134,7 +133,6 @@ class Login extends Component {
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
-                {/* <RoundButton handleClick={this.handleClick} /> */}
                 <FooterButton name='Login' icon='check' cta={this.handleClick} />
             </View >
         );

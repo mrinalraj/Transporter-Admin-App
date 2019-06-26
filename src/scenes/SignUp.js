@@ -52,8 +52,6 @@ class SignUp extends React.Component {
 
     handleSignup = () => {
         const dataClone = Object.assign({}, this.state)
-        // delete dataClone.passwordMatch
-        // delete dataClone.countryCode
         this.validate()
             .then(() => {
                 this.setVisibility(true)
@@ -61,9 +59,7 @@ class SignUp extends React.Component {
                     .then(response => {
                         this.afterSignup(response.data)
                     })
-                    .catch(error => {
-                        console.log(error)
-                    })
+                    .catch(error => alertt(JSON.stringify(error)))
             })
             .catch(error => {
                 Alert.alert('Error', error[Object.keys(error)[0]])
@@ -86,7 +82,7 @@ class SignUp extends React.Component {
                 .has().lowercase()
                 .has().digits()
                 .is().not().oneOf(['Passw0rd', 'Password123'])
-            this.passwordSchema.validate(password) ? errors.password = 'Password must be atleasr 8 charachters long and should contain one of each uppercase, lowercase and digit' : ''
+            this.passwordSchema.validate(password) ? '' : errors.password = 'Password must be atleasr 8 charachters long and should contain one of each uppercase, lowercase and digit'
             !passwordMatch ? errors.password = 'Passwords do not match' : ''
             Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
         })
@@ -107,7 +103,6 @@ class SignUp extends React.Component {
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
-                {/* <RoundButton handleClick={this.handleSignupDmmy} /> */}
                 <FooterButton name="Sign Up" icon="check" cta={this.handleSignup} />
             </View>
         );

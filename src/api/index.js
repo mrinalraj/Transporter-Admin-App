@@ -11,11 +11,9 @@ export default login = (contactNumber, password) => {
                 password
             })
             .then(response => {
-                // this.afterLogin(response.data)
                 resolve(response)
             })
             .catch(error => {
-                // Alert.alert("Error occured", JSON.stringify(error))
                 reject(error)
             })
     })
@@ -25,11 +23,9 @@ export default signup = () => {
     return new Promise((resolve, reject) => {
         Axios.post(`${BASE_API}/signup`)
             .then(response => {
-                // this.afterSignup(response.data)
                 resolve(response)
             })
             .catch(error => {
-                // console.log(error)
                 reject(error)
             })
     })

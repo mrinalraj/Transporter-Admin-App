@@ -23,7 +23,7 @@ class DrawerMenu extends Component {
 
         else {
             Actions.pop()
-            Actions[sceneKey].call()
+            Actions[sceneKey].call(props)
         }
 
     }
@@ -59,7 +59,7 @@ class DrawerMenu extends Component {
                                         Actions.reset('Login')
                                     }
                                     catch{
-                                        console.log('error')
+
                                     }
                                 }
                             },
