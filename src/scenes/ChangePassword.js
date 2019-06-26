@@ -33,7 +33,7 @@ class ChangePassword extends Component {
                 .is().not().oneOf(['Passw0rd', 'Password123'])
             this.passwordSchema.validate(newPassword && newPassword.toString().trim()) ? '' : errors.password = 'Password should be atlest 8 and less than 16 chaachters long'
             newPassword && newPassword.toString().trim() !== repeatNewPassword.toString().trim() ? errors.password = 'Passwords do not match' : ''
-            Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
+            Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors.password)) : resolve()
         })
     }
 
