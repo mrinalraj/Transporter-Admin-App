@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput, Alert, TouchableOpacity, } from 'react-native'
+import { Text, View, Picker, ScrollView, KeyboardAvoidingView, StyleSheet, TextInput, TouchableOpacity, } from 'react-native'
 import NavBar from '../components/NavBar'
 import DatePicker from '../components/DatePicker'
 import Dimens from '../res/Dimens'
@@ -10,6 +10,7 @@ import { ACCESS_TOKEN, BASE_API } from '../res/Constants';
 import Axios from 'axios';
 import LoadingDialog from '../components/LoadingDialog';
 import { Actions } from 'react-native-router-flux';
+import moment from 'moment'
 
 class CreateRide extends Component {
 
@@ -17,12 +18,24 @@ class CreateRide extends Component {
         truckList: [],
         rideList: [],
         vehiclesList: [],
-        pickup: {},
-        drop: {}
+        startAddress: {},
+        endAddress: {},
+        rideType: 'Full'
     }
 
     componentDidMount() {
+        this._getProps()
         this._getAvailableTrucks()
+    }
+
+    _getProps = () => {
+        const { createType, _id, startAddress, startTime, endAddress, endTime, } = this.props
+        if (createType && createType === 'userRequested') {
+            this.setState({
+                _id, startAddress, startTime, endAddress, endTime,
+                rideType: 'Full', createType
+            })
+        }
     }
 
     _getAvailableTrucks = async () => {
@@ -39,8 +52,7 @@ class CreateRide extends Component {
                     return alert(data.payload.error.message);
                 }
                 let vehiclesList = data.payload.result
-                // alert(JSON.stringify(data))
-                this.setState({ vehiclesList })
+                this.setState({ vehiclesList, vehicleId: vehiclesList[0]._id })
             }).catch(err => {
                 this.setState({ loading: false })
             })
@@ -76,11 +88,18 @@ class CreateRide extends Component {
                     , accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
                 Axios.post(`${BASE_API}/addRide`, { startTime, endTime, startAddress, endAddress, vehicleId, rideType }, { headers: { accessToken } })
                     .then(({ data }) => {
-                        this.setState({ loading: false })
                         if (!data.success)
                             return alert(data.payload.error.message)
-
-                        Actions.pop()
+                        if (!!this.props.createType)
+                            Axios.post(`${BASE_API}/updateUserRide`, { userRideID: this.state._id }, { headers: { accessToken } })
+                                .then(({ data }) => {
+                                    if (!data.success)
+                                        return alert(data.payload.error.message)
+                                    this.setState({ loading: false })
+                                    return Actions.pop()
+                                })
+                        this.setState({ loading: false })
+                        return Actions.pop()
                     })
                     .catch(err => alert(err))
             })
@@ -100,6 +119,8 @@ class CreateRide extends Component {
     }
 
     render() {
+        const startTimeValue = this.state.startTime ? moment(this.state.startTime).format('MMMM Do YYYY / hh:mm:ss a') : undefined,
+            endTimeValue = this.state.endTime ? moment(this.state.endTime).format('MMMM Do YYYY / hh:mm:ss a') : undefined
         return (
             <View style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
                 <NavBar title="Create Ride" />
@@ -115,7 +136,7 @@ class CreateRide extends Component {
                             marginBottom: 20
                         }}>
                             <Picker style={{ marginStart: -8, marginTop: -4, marginBottom: -4, marginEnd: -8 }}
-                                selectedValue={this.state.truck}
+                                selectedValue={this.state.vehicleId}
                                 onValueChange={(itemValue, itemIndex) => this.setState({ vehiclesId: itemValue })}>
                                 {
                                     this.state.vehiclesList.map((e, i) => <Picker.Item label={e.truckNumber} key={i} value={e._id} />)
@@ -133,7 +154,8 @@ class CreateRide extends Component {
                         }}>
                             <Picker style={{ marginStart: -8, marginTop: -4, marginBottom: -4, marginEnd: -8 }}
                                 selectedValue={this.state.rideType}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ rideType: itemValue })}>
+                                onValueChange={(itemValue, itemIndex) => this.setState({ rideType: itemValue })}
+                                enabled={!this.props.createType}>
                                 {
                                     this.rideList.map((e, i) => <Picker.Item label={e} key={i} value={e} />)
                                 }
@@ -142,14 +164,16 @@ class CreateRide extends Component {
 
                         <Text style={Styles.labelText}>Pickup Location</Text>
                         <TouchableOpacity
-                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'startAddress' })}>
+                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'startAddress' })}
+                            disabled={!!this.props.createType}>
                             <TextInput editable={false} placeholder="Pickup Location"
                                 style={Styles.inputStyle} value={this.state.startAddress.address} ></TextInput>
                         </TouchableOpacity>
 
                         <Text style={Styles.labelText}>Drop Location</Text>
                         <TouchableOpacity
-                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'endAddress' })}>
+                            onPress={() => Actions.MapPickerCustom({ onLocationSelect: this._onLocationSelect, which: 'endAddress' })}
+                            disabled={!!this.props.createType}>
                             <TextInput editable={false} placeholder="Drop Location"
                                 style={Styles.inputStyle} value={this.state.endAddress.address}></TextInput>
                         </TouchableOpacity>
@@ -158,12 +182,26 @@ class CreateRide extends Component {
                             this.renderBreakPoints()
                         }
 
-                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Pickup Time' placeholder='Pickup Time' onConfirm={() => { (datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp }) }} />
-                        <DatePicker inputStyle={Styles.inputStyle} mode='datetime' label='Drop Time' placeholder='Drop Time' onConfirm={() => { (datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp }) }} />
+                        <DatePicker
+                            inputStyle={Styles.inputStyle}
+                            mode='datetime'
+                            label='Pickup Time'
+                            placeholder='Pickup Time'
+                            value={startTimeValue}
+                            onConfirm={() => { (datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp }) }}
+                            disabled={!!this.props.createType} />
+                        <DatePicker
+                            inputStyle={Styles.inputStyle}
+                            mode='datetime'
+                            label='Drop Time'
+                            placeholder='Drop Time'
+                            value={endTimeValue}
+                            onConfirm={() => { (datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp }) }}
+                            disabled={!!this.props.createType} />
 
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <FooterButton name='Save' icon='check' cta={this._createRideRequest} disabled={this.state.loading}/>
+                <FooterButton name='Save' icon='check' cta={this._createRideRequest} disabled={this.state.loading} />
                 <LoadingDialog visible={this.state.loading} />
             </View >
         );

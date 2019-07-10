@@ -1,14 +1,54 @@
 import React, { Component } from 'react'
-import { TextInput, Image, StyleSheet, View, Text, ScrollView } from 'react-native'
+import { TextInput, Image, StyleSheet, View, Text, ScrollView, Picker } from 'react-native'
 import Colors from '../res/Colors'
 import NavBar from '../components/NavBar'
 import Dimens from '../res/Dimens';
 import UserRequests from '../components/UserRequests'
+import LoadingDialog from '../components/LoadingDialog';
+import { SecureStore } from 'expo';
+import { ACCESS_TOKEN, BASE_API } from '../res/Constants';
+import Axios from 'axios';
 
 class MyRequests extends Component {
+    state = {
+        loading: false,
+        type: 1,
+        list: []
+    }
 
+    componentDidMount() {
+        this._getData()
+    }
 
-    list = [1, 2, 3, 4, 5, 6, 6, 6, 6,]
+    _getData = async (clear = false, page = 1) => {
+        this.setState({ loading: true })
+        if (clear) this.setState({ list: [] })
+        const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        if (!!accessToken) {
+            Axios.post(`${BASE_API}/listRideRequest`, { limit: 20, page, type: this.state.type }, { headers: { accessToken } })
+                .then(({ data }) => {
+                    this.setState({ loading: false })
+                    if (!data.success)
+                        return alert(data.payload.error.message)
+                    this.setState(prevState => ({ list: [...prevState.list, ...data.payload.result.data], accessToken }))
+                })
+        }
+    }
+
+    _performAction = (rideRequestId, action) => {
+        this.setState({ loading: true })
+        const { accessToken } = this.state
+        Axios.post(`${BASE_API}/actionOnRideRequest`, { rideRequestId, action }, { headers: { accessToken } })
+            .then(({ data }) => {
+                this.setState({ loading: false })
+                if (!data.success)
+                    return alert(data.payload.error.message)
+                this._getData(false)
+
+            })
+    }
+
+    filters = ['Pending', 'Accepted', 'Rejected', 'Payment Done']
 
     render() {
         return (
@@ -22,13 +62,27 @@ class MyRequests extends Component {
                         </View>
                     </View>
                 </View> */}
-                <View>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: Dimens.padding / 2 }}>
+                <View style={{
+                    marginLeft: Dimens.padding / 2,
+                    marginRight: Dimens.padding / 2, backgroundColor: Colors.White, borderRadius: 5
+                }}>
+                    <Picker
+                        style={{ margin: -4, marginEnd: -11, marginStart: -5, paddingLeft: 10 }}
+                        selectedValue={this.state.filter}
+                        onValueChange={(itemValue, itemIndex) => this.setState({ filter: itemValue, type: itemValue }, () => this._getData(true))}>
                         {
-                            this.list.map((e, i) => <UserRequests key={i} />)
+                            this.filters.map((filter, i) => <Picker.Item key={i} label={filter} value={i + 1} />)
+                        }
+                    </Picker>
+                </View>
+                <View>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: Dimens.padding / 2, paddingTop: Dimens.padding / 2 }}>
+                        {
+                            this.state.list.map((e, i) => <UserRequests key={i} {...e} type={this.state.type} accessToken={this.state.accessToken} performAction={this._performAction} />)
                         }
                     </ScrollView>
                 </View>
+                <LoadingDialog visible={this.state.loading} />
             </View>
         );
     }

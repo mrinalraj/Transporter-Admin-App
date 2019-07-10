@@ -7,95 +7,43 @@ import RidesListing from '../../components/RidesListing'
 import { Actions } from 'react-native-router-flux';
 import NavBar from '../../components/NavBar';
 import FooterButton from '../../components/FooterButton';
+import LoadingDialog from '../../components/LoadingDialog';
+import { SecureStore } from 'expo';
+import { ACCESS_TOKEN, BASE_API } from '../../res/Constants';
+import Axios from 'axios';
 
 class MyRides extends Component {
     state = {
-        filter: '---- Select Filter ----'
+        loading: false,
+        type: 1,
+        list: []
     }
 
-    list = [
-        {
-            from: {
-                place: 'New Delhi',
-                subplace: 'Okhla'
-            },
-            to: {
-                place: 'Hyderabad',
-                subplace: 'Hyderabad',
-            },
-            loadType: 'Full Load',
-            startDate: '',
-            endDate: '',
-            usersCount: '10',
-            status: 'Pending'
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            loadType: 'Shared',
-            startDate: '',
-            endDate: '',
-            usersCount: '4',
-            status: 'Complete'
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            loadType: 'Shared',
-            startDate: '',
-            endDate: '',
-            usersCount: '4',
-            status: 'Upcoming'
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            loadType: 'Shared',
-            startDate: '',
-            endDate: '',
-            usersCount: '4',
-            status: 'Complete'
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            loadType: 'Shared',
-            startDate: '',
-            endDate: '',
-            usersCount: '4',
-            status: 'Pending'
-        },
-    ]
+
+    componentDidMount() {
+        this._getData()
+    }
+
+    _getData = async (page = 1) => {
+        this.setState({ loading: true })
+        const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        if (!!accessToken) {
+            Axios.post(`${BASE_API}/myRides`, { limit: 20, page, type: this.state.type }, { headers: { accessToken } })
+                .then(({ data }) => {
+                    this.setState({ loading: false })
+                    if (!data.success)
+                        return alert(data.payload.error.message)
+                    this.setState(prevState => ({ list: [...prevState.list, ...data.payload.result.data], accessToken }))
+                })
+        }
+        else this.state({ loading: false })
+    }
 
     viewDetails = e => {
-        Actions.FullDetail({ data: e })
+        Actions.FullDetail({ ...e, accessToken: this.state.accessToken, currentType: this.state.type })
     }
 
-    filters = ["---- Select Filter ----", "Pending", "Complete", "Current", "Upcoming",]
+    filters = ['Upcoming', "Pending", "Current", "Complete",]
 
     render() {
         return (
@@ -110,27 +58,23 @@ class MyRides extends Component {
                     <Picker
                         style={{ margin: -4, marginEnd: -11, marginStart: -5 }}
                         selectedValue={this.state.filter}
-                        onValueChange={(itemValue, itemIndex) => this.setState({ filter: itemValue })}>
+                        onValueChange={(itemValue, itemIndex) => this.setState({ filter: itemValue, type: itemIndex + 1 }, () => this._getData())}>
                         {
-                            this.filters.map((filter, i) => <Picker.Item key={i} label={filter} value={filter} />)
+                            this.filters.map((filter, i) => <Picker.Item key={i} label={filter} value={i + 1} />)
                         }
                     </Picker>
                 </View>
 
                 <View style={{ flex: 1, padding: Dimens.padding / 2, paddingBottom: Dimens.footerButtonHeight, }}>
-                    <ScrollView contentContainerStyle={{ flexGrow: 2,}} showsVerticalScrollIndicator={false}>
+                    <ScrollView contentContainerStyle={{ flexGrow: 2, }} showsVerticalScrollIndicator={false}>
                         {
-                            this.list.map((e, i) => {
-                                if (this.state.filter == '---- Select Filter ----')
-                                    return <RidesListing key={i} {...e} viewDetails={() => this.viewDetails(e)} />
-                                if (e.status == this.state.filter)
-                                    return <RidesListing key={i} {...e} viewDetails={() => this.viewDetails(e)} />
-                            })
+                            this.state.list.map((e, i) => <RidesListing key={i} accessToken={this.state.accessToken} {...e} viewDetails={() => this.viewDetails(e)} type={this.state.type} />)
                         }
                     </ScrollView>
                 </View>
                 {/* <FAB style={{ position: 'absolute', bottom: Dimens.padding / 2, right: Dimens.padding / 2 }} label="Create Ride" icon='add' onPress={() => Actions.CreateRide()} /> */}
                 <FooterButton name="Create Ride" icon="add" cta={() => Actions.CreateRide()} />
+                <LoadingDialog visible={this.state.loading} />
             </View >
         );
     }

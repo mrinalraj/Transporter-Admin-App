@@ -21,99 +21,6 @@ class Home extends Component {
         list: []
     }
 
-    list = [
-        {
-            from: {
-                place: 'New Delhi',
-                subplace: 'Okhla'
-            },
-            to: {
-                place: 'Hyderabad',
-                subplace: 'Hyderabad',
-            },
-            truckType: 'container',
-            size: '32 ft sxl',
-            time: '8 AM Tommorow',
-            itemType: 'Electronic goods',
-            rate: 49000
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            truckType: 'container',
-            size: '12 ft sxl',
-            time: '10 AM Tommorow',
-            itemType: 'Machine parts',
-            rate: 49000
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            truckType: 'container',
-            size: '12 ft sxl',
-            time: '10 AM Tommorow',
-            itemType: 'Machine parts',
-            rate: 49000
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            truckType: 'container',
-            size: '12 ft sxl',
-            time: '10 AM Tommorow',
-            itemType: 'Machine parts',
-            rate: 49000
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            truckType: 'container',
-            size: '12 ft sxl',
-            time: '10 AM Tommorow',
-            itemType: 'Machine parts',
-            rate: 49000
-        },
-        {
-            from: {
-                place: 'Roorkee',
-                subplace: 'Adarsh Nagar'
-            },
-            to: {
-                place: 'Dehradun',
-                subplace: 'Dehradun',
-            },
-            truckType: 'container',
-            size: '12 ft sxl',
-            time: '10 AM Tommorow',
-            itemType: 'Machine parts',
-            rate: 49000
-        }
-    ]
-
     _getData = async (page = 1) => {
         this.setState({ loading: true })
         const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
@@ -126,7 +33,7 @@ class Home extends Component {
                     this.setState({ loading: false })
                     if (!data.success)
                         return alert(data.payload.error.message)
-                    return this.setState({ list: data.payload.result.data })
+                    return this.setState(prevState => ({ list: [...prevState.list, ...data.payload.result.data] }))
 
                 })
                 .catch(error => alert(error))
@@ -147,7 +54,7 @@ class Home extends Component {
         }, Alert.alert('', 'Are you sure you want to accept the request', [
             {
                 text: 'Yes',
-                onPress: () => Actions.CreateRideUserRequest({ data: e })
+                onPress: () => Actions.CreateRide({ ...e, createType: 'userRequested' })
             },
             {
                 text: "No",

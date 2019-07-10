@@ -25,6 +25,7 @@ import MarketRate from './scenes/MarketRate'
 import CreateVehicle from './scenes/CreateVehicle';
 import MapPickerCustom from './components/MapPickerCustom';
 import CheckLoginState from './scenes/CheckLoginState';
+import FullScreenImage from './scenes/FullScreenImage';
 
 
 class Routes extends React.Component {
@@ -48,6 +49,7 @@ class Routes extends React.Component {
                         <Scene key="MyRides" component={MyRides} hideNavBar />
                         <Scene key="MyRequests" component={MyRequests} hideNavBar />
                         <Scene key="MarketRate" component={MarketRate} hideNavBar />
+                        <Scene key="FullScreenImage" component={FullScreenImage} hideNavBar />
                     </Drawer>
                     <Scene key="Login"
                         component={Login}

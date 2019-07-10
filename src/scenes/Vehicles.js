@@ -26,7 +26,7 @@ class Vehicles extends Component {
 
     _getVehiclesList = async () => {
         this.setState({ loading: true })
-        let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
         headers = {
             accessToken
         }

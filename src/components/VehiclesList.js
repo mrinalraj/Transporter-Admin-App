@@ -4,12 +4,13 @@ import Colors from '../res/Colors';
 import NavBar from './NavBar';
 import { Card, Button } from 'react-native-paper'
 import Dimens from '../res/Dimens'
+import { Actions } from 'react-native-router-flux';
 
 class VehiclesList extends Component {
     state = {
 
     }
-    
+
     render() {
         return (
             <Card style={{
@@ -32,15 +33,14 @@ class VehiclesList extends Component {
                             <Text style={{ textAlign: 'right', ...Styles.text }}>{this.props.truckType}</Text>
                             <Text style={{ textAlign: 'right', ...Styles.text }}>{this.props.truckSubType}</Text>
                             <Text style={{ textAlign: 'right', ...Styles.text }}>{this.props.truckNumber}</Text>
-                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }}  onPress={()=>{}}>{`View`.toUpperCase()}</Text>
-                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }}  onPress={()=>{}}>{`View`.toUpperCase()}</Text>
+                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }} onPress={() => Actions.FullScreenImage({ image: [{ url: this.props.rcCardUrl }] })}>{`View`.toUpperCase()}</Text>
+                            <Text style={{ textAlign: 'right', color: Colors.primaryColor, ...Styles.text }} onPress={() => Actions.FullScreenImage({ image: [{ url: this.props.insuranceUrl }] })}>{`View`.toUpperCase()}</Text>
                             {/* <Text style={{ textAlign: 'right', ...Styles.text }}>10000 Kilograms</Text>
                             <Text style={{ textAlign: 'right', ...Styles.text }}>1000 Litres</Text> */}
                         </View>
                     </View>
                 </Card.Content>
                 <Card.Actions style={{ justifyContent: 'flex-end' }}>
-                    <Button icon='unfold-more'>View</Button>
                     <Button icon='edit'>Edit</Button>
                 </Card.Actions>
             </Card>

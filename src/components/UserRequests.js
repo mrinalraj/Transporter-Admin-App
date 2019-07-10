@@ -1,14 +1,31 @@
 import React, { Component } from 'react'
-import { View, Text, } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import Colors from '../res/Colors';
-import NavBar from './NavBar';
 import { Card, Subheading, Title, Button } from 'react-native-paper'
 import Dimens from '../res/Dimens'
-
+import moment from 'moment'
 
 class UserRequests extends Component {
     state = {
 
+    }
+
+    _renderActions = () => {
+        return this.props.type == 1 ?
+            <Card.Actions style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <TouchableOpacity onPress={() => this.props.performAction(this.props._id,2)}
+                    style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>
+                    <Text>Reject</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.props.performAction(1)}
+                    style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>
+                    <Text>Accept</Text>
+                </TouchableOpacity>
+                {/* <Button icon='phone'>Call</Button>
+                    <Button icon='close'>Reject</Button>
+                    <Button icon='check'>Accept</Button> */}
+            </Card.Actions>
+            : null
     }
 
     render() {
@@ -19,26 +36,21 @@ class UserRequests extends Component {
                 width: Dimens.windowWidth - Dimens.padding - Dimens.wp('15')
             }}>
                 <Card.Content>
-                    <Title>Username</Title>
-                    <Text>7894561230</Text>
+                    <Title>{this.props.userData.name}</Title>
+                    <Text>{this.props.userData.contactNo}</Text>
                     <View style={{ marginTop: 30, flexDirection: 'row' }}>
-                        <Text style={{ fontSize: 16, flex: 0.5, }}>{`Pickup Location\nCity`}</Text>
-                        <Text style={{ fontSize: 16, flex: 0.5, textAlign: 'right' }}>{`Drop Location\nCity`}</Text>
+                        <Text style={{ fontSize: 16, flex: 0.5, }}>{`${this.props.rideData.startAddress.address.split('/')[0]}\n${this.props.rideData.startAddress.address.split('/')[1]}`}</Text>
+                        <Text style={{ fontSize: 16, flex: 0.5, textAlign: 'right' }}>{`${this.props.rideData.endAddress.address.split('/')[0]}\n${this.props.rideData.endAddress.address.split('/')[1]}`}</Text>
                     </View>
                     <Title style={{ marginTop: 30 }}>UK 07E 1235</Title>
-                    <Text style={{ marginTop: 20 }}>{`Tommorow | 5th, April\n08:35 AM`}</Text>
-                    <Text style={{ marginTop: 20 }}>{`Shared`}</Text>
-                    <Text style={{ marginTop: 20 }}>{`Electronics Goods`}</Text>
+                    <Text style={{ marginTop: 20 }}>{moment(this.props.rideData.startTime).format('MMMM Do YYYY / hh:mm:ss a')}</Text>
+                    <Text style={{ marginTop: 20 }}>{moment(this.props.rideData.endTime).format('MMMM Do YYYY / hh:mm:ss a')}</Text>
+                    <Text style={{ marginTop: 20 }}>{this.props.rideType}</Text>
 
                 </Card.Content>
-                <Card.Actions style={{ marginTop: 30, flexDirection: 'row', }}>
-                    <Text style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>Call</Text>
-                    <Text style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>Reject</Text>
-                    <Text style={{ margin: 5, borderRadius: 5, flex: 0.33, textAlign: 'center', padding: 10, borderColor: Colors.primaryColor, borderWidth: 1 }}>Accept</Text>
-                    {/* <Button icon='phone'>Call</Button>
-                    <Button icon='close'>Reject</Button>
-                    <Button icon='check'>Accept</Button> */}
-                </Card.Actions>
+                {
+                    this._renderActions()
+                }
             </Card >
         );
     }

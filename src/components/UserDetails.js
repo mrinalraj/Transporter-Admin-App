@@ -7,16 +7,18 @@ class UserDetails extends Component {
         ...this.props,
     }
 
+    status = ['a', 'b', 'c', 'd']
+
     render() {
         return (
             <View style={{ marginBottom: 20 }} onLayout={event => this.props.onLayout(event)}>
                 <Card>
                     <Card.Content>
-                        <Title>{this.state.name}</Title>
-                        <Subheading>{this.state.phone}</Subheading>
+                        <Title>{this.props.name}</Title>
+                        <Subheading>{this.props.contactNo}</Subheading>
                     </Card.Content>
                     <Card.Content>
-                        <Subheading>{this.state.status}</Subheading>
+                        <Subheading>{this.status[this.props.status]}</Subheading>
                     </Card.Content>
                 </Card>
             </View>

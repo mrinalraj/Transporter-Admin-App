@@ -20,7 +20,7 @@ class DatePicker extends Component {
             datetime = moment(data).format('Do MMMM YYYY / hh:mm a')
 
         this.setState({
-            datetime:datetime, isVisible: false
+            datetime: datetime, isVisible: false
         }, this.props.onConfirm(this.state.datetime))
     }
 
@@ -44,8 +44,9 @@ class DatePicker extends Component {
                             this.setState({
                                 isVisible: true
                             })
-                        }}>
-                        <TextInput style={this.Styles.inputStyle} placeholder={this.props.placeholder} editable={false} value={this.state.datetime} />
+                        }}
+                        disabled={this.props.disabled}>
+                        <TextInput style={this.Styles.inputStyle} placeholder={this.props.placeholder} editable={false} value={this.props.value || this.state.datetime} />
                     </TouchableOpacity>
                 </View>
                 <DateTimePicker

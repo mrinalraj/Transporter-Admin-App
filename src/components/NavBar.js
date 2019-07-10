@@ -61,7 +61,7 @@ class NavBar extends React.Component {
         return (
             <View>
                 <View style={{ height: Dimens.statusBarHeight, backgroundColor: Colors.primaryColor }} />
-                <View style={{ backgroundColor: Colors.primaryColor, padding: Dimens.padding / 3, }}>
+                <View style={{ backgroundColor: Colors.primaryColor, padding: Dimens.padding / 3, paddingRight: Dimens.padding / 2 }}>
                     {
                         this.state.searchShown ? this.searchBar() : this.topBar()
                     }
